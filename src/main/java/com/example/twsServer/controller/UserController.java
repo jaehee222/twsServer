@@ -1,11 +1,13 @@
 package com.example.twsServer.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.twsServer.Entity.User;
+import com.example.twsServer.DTO.UserDTO;
+import com.example.twsServer.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/twsServer")
+@RequestMapping("/user")
 public class UserController {
 
     // 리엑트에서 spring 호출가능한지 테스트
@@ -13,4 +15,30 @@ public class UserController {
     public String getSampleMessage(){
         return "im spring";
     }
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping ("/idDubleCheck")
+    public boolean idDoubleCheck(@RequestParam String id){
+        return userService.idDubleCheck(id);
+    }
+
+    @PostMapping("/login")
+    public boolean login(@RequestParam String id, @RequestParam String password){
+        return userService.login(id, password);
+    }
+
+    @PostMapping("/findByPassword")
+    public User findByPassword(@RequestParam String Email){
+        return userService.findByPassword(Email);
+    }
+
+    @PostMapping("/join")
+    public User join(@RequestBody UserDTO userDTO){
+        return userService.join(userDTO);
+    }
+
+    @GetMapping("/logout")
+    public void logout(){}  //
 }
