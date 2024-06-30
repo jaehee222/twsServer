@@ -1,23 +1,22 @@
 package com.example.twsServer.service;
 
-import com.example.twsServer.entity.User;
-import com.example.twsServer.DTO.UserDTO;
+import com.example.twsServer.dto.UserDto;
+import com.example.twsServer.entity.UserEntity;
 import com.example.twsServer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    private PasswordEncoder passwordEncoder;
-
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
     // 아이디 중복확인
-    public boolean idDubleCheck(String userId){
-        if (userRepository.existsByUserId(userId)) {
+    public boolean idDoubleCheck(String UserId){
+        if (userRepository.existsByUserId(UserId)) {
             return true;
         }else{
             return false;
@@ -25,39 +24,48 @@ public class UserService {
     }
 
     // 회원가입
-    public User join(UserDTO userDTO){
+    public UserDto join(UserDto userDto){
 
-        User user = new User();
-        user.setUserId(userDTO.getUserId());
-        user.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
-        user.setEmail(userDTO.getEmail());
+        UserEntity user = new UserEntity();
+        user.setUserId(userDto.getUserId());
+        user.setPassword(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
+        userRepository.save(user);
 
-        return userRepository.save(user);
+        return userDto;
     }
 
     // 로그인
-    public boolean login(String userId, String password){
-        User user = userRepository.findByUserId(userId);
+    public boolean login(String UserId, String password){
+        UserEntity user = userRepository.findByUserId(UserId);
         // 맞는지 확인..
-        if (user == null || !passwordEncoder.matches(password, user.getPassWord())) {
-            return false;
-        }
+//        if (user == null || !passwordEncoder.matches(password, user.getPassWord())) {
+//            return false;
+//        }
 
         return true;
     }
 
     // 비밀번호 찾기
-    public User findByPassword(String email) {
-        User user = userRepository.findByEmail(email);
+    public UserDto findByPassword(String Email) {
+        UserEntity user = userRepository.findByEmail(Email);
         if (user == null) {
             throw new RuntimeException("Invalid email");
         }
-        return user;
+
+        return convertToDto(user);
+    }
+
+    private UserDto convertToDto(UserEntity userEntity) {
+        UserDto userDto = new UserDto();
+        userDto.setUserId(userEntity.getUserId());
+        userDto.setPassword(userEntity.getPassword());
+        userDto.setEmail(userEntity.getEmail());
+        userDto.setRegDate(userEntity.getRegDate());
+        return userDto;
     }
 
     // 로그아웃..
-    public void logout(User user){
+    public void logout(UserDto userDto){
     }
-
 }
-

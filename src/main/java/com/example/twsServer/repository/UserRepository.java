@@ -1,15 +1,13 @@
 package com.example.twsServer.repository;
 
-import com.example.twsServer.entity.User;
+import com.example.twsServer.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    User findByUserId(String id);
+    boolean existsByUserId(String userId);
 
-    boolean existsByUserId(String id);
+    UserEntity findByUserId(String userId);
 
-    User findByEmail(String email);
+    UserEntity findByEmail(String email);
 }

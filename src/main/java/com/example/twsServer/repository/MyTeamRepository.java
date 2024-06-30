@@ -1,9 +1,7 @@
 package com.example.twsServer.repository;
 
-import com.example.twsServer.Entity.MyTeam;
+import com.example.twsServer.entity.MyTeamEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface MyTeamRepository extends JpaRepository<MyTeam,Long> {
+public interface MyTeamRepository extends JpaRepository<MyTeamEntity, Long> {
 }
