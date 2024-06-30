@@ -1,6 +1,6 @@
 package com.example.twsServer.service;
 
-import com.example.twsServer.Entity.User;
+import com.example.twsServer.entity.User;
 import com.example.twsServer.DTO.UserDTO;
 import com.example.twsServer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     // 아이디 중복확인
-    public boolean idDubleCheck(String id){
-        if (userRepository.existsByUserId(id)) {
+    public boolean idDubleCheck(String userId){
+        if (userRepository.existsByUserId(userId)) {
             return true;
         }else{
             return false;
@@ -28,7 +28,7 @@ public class UserService {
     public User join(UserDTO userDTO){
 
         User user = new User();
-        user.setId(userDTO.getId());
+        user.setUserId(userDTO.getUserId());
         user.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
         user.setEmail(userDTO.getEmail());
 
@@ -36,8 +36,8 @@ public class UserService {
     }
 
     // 로그인
-    public boolean login(String Id, String password){
-        User user = userRepository.findByUserId(Id);
+    public boolean login(String userId, String password){
+        User user = userRepository.findByUserId(userId);
         // 맞는지 확인..
         if (user == null || !passwordEncoder.matches(password, user.getPassWord())) {
             return false;

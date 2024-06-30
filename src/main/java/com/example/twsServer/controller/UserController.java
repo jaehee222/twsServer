@@ -1,6 +1,6 @@
 package com.example.twsServer.controller;
 
-import com.example.twsServer.Entity.User;
+import com.example.twsServer.entity.User;
 import com.example.twsServer.DTO.UserDTO;
 import com.example.twsServer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

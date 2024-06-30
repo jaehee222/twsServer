@@ -2,18 +2,18 @@ package com.example.twsServer.DTO;
 
 public class UserDTO {
 
-    private String id;
+    private String UserId;
     private String PassWord;
     private String NickName;
     private String Email;
     private String RegDate;
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return UserId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        UserId = userId;
     }
 
     public String getPassWord() {

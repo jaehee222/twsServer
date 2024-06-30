@@ -1,4 +1,4 @@
-package com.example.twsServer.Entity;
+package com.example.twsServer.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

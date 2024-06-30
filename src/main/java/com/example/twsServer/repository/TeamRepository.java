@@ -1,6 +1,6 @@
 package com.example.twsServer.repository;
 
-import com.example.twsServer.Entity.Team;
+import com.example.twsServer.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
