@@ -1,4 +1,4 @@
-package com.example.twsServer.entity;
+package com.example.twsServer.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

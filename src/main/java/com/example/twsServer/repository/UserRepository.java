@@ -1,6 +1,6 @@
 package com.example.twsServer.repository;
 
-import com.example.twsServer.entity.UserEntity;
+import com.example.twsServer.Entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
