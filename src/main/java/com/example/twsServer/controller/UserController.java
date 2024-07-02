@@ -2,6 +2,7 @@ package com.example.twsServer.controller;
 
 import com.example.twsServer.dto.UserDto;
 import com.example.twsServer.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,14 +25,23 @@ public class UserController {
 
     // ID 중복 체크 API
     @GetMapping("/checkId")
-    public boolean checkId(@RequestParam String UserId) {
-        return userService.idDoubleCheck(UserId);
+    public boolean checkId(@RequestParam String userId) {
+        return userService.idDoubleCheck(userId);
     }
 
     // 로그인 API
     @PostMapping("/login")
-    public boolean login(@RequestBody UserDto userDto) {
-        return userService.login(userDto.getUserId(), userDto.getPassword());
+    public boolean login(HttpSession session, @RequestBody UserDto userDto) {
+
+        if  (userService.login(userDto.getUserId(), userDto.getPassword())){
+            // 로그인 성공되면 세션 저장
+            session.setAttribute("userId", userDto.getUserId());
+
+            return true;
+
+        }else{
+            return false;
+        }
     }
 
     // 비밀번호로 사용자 찾기 API
@@ -46,8 +56,9 @@ public class UserController {
         return userService.join(userDto);
     }
 
-    @PostMapping("/logout")
-    public void logout() {
-        // 로그아웃 관련 로직 구현
+    @GetMapping("/logout")
+    public void logout(HttpSession session) {
+        // 로그인 세션 끊기
+        session.invalidate();
     }
 }
