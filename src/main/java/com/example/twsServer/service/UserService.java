@@ -6,6 +6,8 @@ import com.example.twsServer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -27,9 +29,13 @@ public class UserService {
     public UserDto join(UserDto userDto){
 
         UserEntity user = new UserEntity();
+
         user.setUserId(userDto.getUserId());
         user.setPassword(userDto.getPassword());
+        user.setNickName(userDto.getNickName());
         user.setEmail(userDto.getEmail());
+        user.setRegDate(new Date());
+
         userRepository.save(user);
 
         return userDto;
@@ -38,11 +44,6 @@ public class UserService {
     // 로그인
     public boolean login(String UserId, String password){
         UserEntity user = userRepository.findByUserId(UserId);
-        // 맞는지 확인..
-//        if (user == null || !passwordEncoder.matches(password, user.getPassWord())) {
-//            return false;
-//        }
-
         return true;
     }
 
