@@ -26,25 +26,8 @@ public class UserService {
         }
     }
 
-    private void validateUserDto(UserDto userDto) {
-        if (userDto.getUserId() == null || userDto.getUserId().trim().isEmpty()) {
-            throw new ValidationException("userId is null");
-        }
-        if (userDto.getPassword() == null || userDto.getPassword().trim().isEmpty()) {
-            throw new ValidationException("password is null");
-        }
-        if (userDto.getNickName() == null || userDto.getNickName().trim().isEmpty()) {
-            throw new ValidationException("nickName is null");
-        }
-        if (userDto.getEmail() == null || userDto.getEmail().trim().isEmpty()) {
-            throw new ValidationException("email is null");
-        }
-    }
-
     // 회원가입
     public UserDto join(UserDto userDto){
-
-        validateUserDto(userDto);
 
         UserEntity user = new UserEntity();
 
@@ -52,7 +35,7 @@ public class UserService {
         user.setPassword(userDto.getPassword());
         user.setNickName(userDto.getNickName());
         user.setEmail(userDto.getEmail());
-        user.setRegDate(new Date());    // 가입일 자동셋팅
+        user.setRegDate(new Date());            // 가입일 자동셋팅
 
         userRepository.save(user);
 
@@ -73,21 +56,26 @@ public class UserService {
     }
 
     // 비밀번호 찾기
-    public UserDto findByPassword(String Email) {
+    public boolean findByPassword(String Email) {
         UserEntity user = userRepository.findByEmail(Email);
-        if (user == null) {
-            throw new RuntimeException("Invalid email");
+
+        if (user == null){
+            return false;
+        }else{
+            // 이메일 전송 로직은 추후 개발 .. 일단 email 매칭만 해둠
+            return true;
         }
-        // 이메일 전송 로직은 추후 개발 .. 일단 email매칭만 해둠
-        return convertToDto(user);
     }
 
+    // 필요할때 사용 .. 아님 지우기
     private UserDto convertToDto(UserEntity userEntity) {
         UserDto userDto = new UserDto();
+
         userDto.setUserId(userEntity.getUserId());
         userDto.setPassword(userEntity.getPassword());
         userDto.setEmail(userEntity.getEmail());
         userDto.setRegDate(userEntity.getRegDate());
+
         return userDto;
     }
 }
