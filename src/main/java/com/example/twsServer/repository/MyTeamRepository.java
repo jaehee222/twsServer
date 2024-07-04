@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MyTeamRepository extends JpaRepository<MyTeamEntity, Long> {
 
-    MyTeamEntity getMyTeam(String userId);
+    MyTeamEntity findByUserId(String userId);
 }

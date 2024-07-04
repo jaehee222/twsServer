@@ -6,7 +6,7 @@ import java.util.List;
 public class MyTeamDto {
     private String userId;
     private Date regDate;
-    private List<TeamDto> teamDtoList;
+//    private List<TeamDto> teamDtoList;
 
     public String getUserId() {
         return userId;
@@ -24,11 +24,11 @@ public class MyTeamDto {
         this.regDate = regDate;
     }
 
-    public List<TeamDto> getTeamDtoList() {
-        return teamDtoList;
-    }
-
-    public void setTeamDtoList(List<TeamDto> teamDtoList) {
-        this.teamDtoList = teamDtoList;
-    }
+//    public List<TeamDto> getTeamDtoList() {
+//        return teamDtoList;
+//    }
+//
+//    public void setTeamDtoList(List<TeamDto> teamDtoList) {
+//        this.teamDtoList = teamDtoList;
+//    }
 }

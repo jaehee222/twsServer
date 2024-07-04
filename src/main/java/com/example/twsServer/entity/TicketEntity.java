@@ -12,7 +12,6 @@ public class TicketEntity {
 
     @EmbeddedId
     private TicketId ticketId;
-
     private int homeTeamNo;
     private int awayTeamNo;
     private Date gameDate;

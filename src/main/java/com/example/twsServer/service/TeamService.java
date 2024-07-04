@@ -1,9 +1,7 @@
 package com.example.twsServer.service;
 
 import com.example.twsServer.dto.TeamDto;
-import com.example.twsServer.dto.UserDto;
 import com.example.twsServer.entity.TeamEntity;
-import com.example.twsServer.entity.UserEntity;
 import com.example.twsServer.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

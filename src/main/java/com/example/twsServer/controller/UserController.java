@@ -1,6 +1,7 @@
 package com.example.twsServer.controller;
 
 import com.example.twsServer.dto.UserDto;
+import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,42 +20,43 @@ public class UserController {
         this.userService = userService;
     }
 
+    // 단순한 테스트용 API 예제
+    @GetMapping("/test")
+    public String getSampleMessage() {
+        return "Hi, I'm Spring!";
+    }
+
     // ID 중복 체크 API
     @GetMapping("/checkId")
-    public ResponseEntity<Object> checkId(@RequestParam String userId) {
-        boolean isJoinedID = userService.idDoubleCheck(userId);
-
-        if (isJoinedID){
-            return ResponseEntity.badRequest().body("ID already registered");
-        }else{
-            return ResponseEntity.status(HttpStatus.CREATED).body("available ID");
-        }
+    public boolean checkId(@RequestParam String userId) {
+        return userService.idDoubleCheck(userId);
     }
 
     // 로그인 API
     @PostMapping("/login")
-    public ResponseEntity<Object> login(HttpSession session, @RequestBody UserDto userDto) {
+    public boolean login(HttpSession session, @RequestBody UserDto userDto) {
 
         if (userService.login(userDto.getUserId(), userDto.getPassword())) {
             // 로그인 성공되면 세션 저장
             session.setAttribute("userId", userDto.getUserId());
-            return ResponseEntity.status(HttpStatus.CREATED).body("login Success");
+            return true;
         } else {
-            return ResponseEntity.badRequest().body("login fail");
+            return false;
         }
     }
 
     // 비밀번호로 사용자 찾기 API
     @GetMapping("/findByPassword")
     public ResponseEntity<Object> findByPassword(@RequestParam String email) {
-
-        boolean isEmailSend = userService.findByPassword(email);
-
-        if (isEmailSend){
-            return ResponseEntity.badRequest().body("Email send error");
-        }else{
-            return ResponseEntity.status(HttpStatus.CREATED).body("email send Success");
+        
+        if (email == null) {
+            ResponseEntity.badRequest().body("email is null");
         }
+
+
+        
+        // 나중에 이메일 전송 로직 구현 필요
+        return ResponseEntity.status(HttpStatus.CREATED).body("end Email!");
     }
 
     // 사용자 회원가입 API

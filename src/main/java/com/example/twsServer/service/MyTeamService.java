@@ -3,6 +3,7 @@ package com.example.twsServer.service;
 import com.example.twsServer.dto.MyTeamDto;
 import com.example.twsServer.dto.TeamDto;
 import com.example.twsServer.entity.MyTeamEntity;
+import com.example.twsServer.entity.TeamEntity;
 import com.example.twsServer.repository.MyTeamRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,17 +19,17 @@ public class MyTeamService {
 //        List<TeamDto> teamDtoList = teams.stream()
 //                .map(this::convertToTeamDto)
 //                .collect(Collectors.toList());
-        MyTeamEntity myTeamEntity = myTeamRepository.getMyTeam(userId);
+        MyTeamEntity myTeamEntity = myTeamRepository.findByUserId(userId);
 
         return convertToDto(myTeamEntity);
     }
 
-    private TeamDto convertToTeamDto(TeamDto teamDto) {
+    private TeamDto convertToTeamDto(TeamEntity teamEntity) {
         TeamDto dto = new TeamDto();
-        dto.setTeamNo(teamDto.getTeamNo());
-        dto.setTeamName(teamDto.getTeamName());
-        dto.setSportsKind(teamDto.getSportsKind());
-        dto.setPlace(teamDto.getPlace());
+        dto.setTeamNo(teamEntity.getTeamNo());
+        dto.setTeamName(teamEntity.getTeamName());
+        dto.setSportsKind(teamEntity.getSportsKind());
+        dto.setPlace(teamEntity.getPlace());
         return dto;
     }
 
@@ -36,7 +37,7 @@ public class MyTeamService {
         MyTeamDto myTeamDto = new MyTeamDto();
         myTeamDto.setUserId(myTeamEntity.getUserId());
         myTeamDto.setRegDate(myTeamEntity.getRegDate());
-        myTeamDto.setTeamDtoList(myTeamEntity.getMyTeamDtoList());
+//        myTeamDto.setTeamDtoList(myTeamEntity.getMyTeamDtoList());
 
         return myTeamDto;
     }
