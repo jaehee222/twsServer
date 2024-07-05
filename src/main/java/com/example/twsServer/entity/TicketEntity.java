@@ -3,6 +3,7 @@ package com.example.twsServer.entity;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 @Table(name = "Ticket")
 public class TicketEntity {
 
-    @EmbeddedId
+    @Id
     private TicketId ticketId;
     private int homeTeamNo;
     private int awayTeamNo;

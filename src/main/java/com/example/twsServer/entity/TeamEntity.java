@@ -1,8 +1,6 @@
 package com.example.twsServer.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Team")
@@ -13,6 +11,9 @@ public class TeamEntity {
     private String teamName;
     private String sportsKind;
     private String place;
+
+    @OneToOne(mappedBy = "team")
+    MyTeamEntity myTeamEntity;
 
     public int getTeamNo() {
         return teamNo;

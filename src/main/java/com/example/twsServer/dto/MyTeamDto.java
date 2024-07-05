@@ -1,12 +1,14 @@
 package com.example.twsServer.dto;
 
 import java.util.Date;
-import java.util.List;
 
 public class MyTeamDto {
     private String userId;
     private Date regDate;
-//    private List<TeamDto> teamDtoList;
+    private int teamNo;
+    private String teamName;
+    private String place;
+    private String sportsKind;
 
     public String getUserId() {
         return userId;
@@ -24,11 +26,36 @@ public class MyTeamDto {
         this.regDate = regDate;
     }
 
-//    public List<TeamDto> getTeamDtoList() {
-//        return teamDtoList;
-//    }
-//
-//    public void setTeamDtoList(List<TeamDto> teamDtoList) {
-//        this.teamDtoList = teamDtoList;
-//    }
+    public int getTeamNo() {
+        return teamNo;
+    }
+
+    public void setTeamNo(int teamNo) {
+        this.teamNo = teamNo;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public String getSportsKind() {
+        return sportsKind;
+    }
+
+    public void setSportsKind(String sportsKind) {
+        this.sportsKind = sportsKind;
+    }
 }
+

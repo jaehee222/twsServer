@@ -1,13 +1,9 @@
 package com.example.twsServer.entity;
 
 import com.example.twsServer.dto.MyTeamDto;
-import com.example.twsServer.dto.TeamDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "MyTeam")
@@ -15,7 +11,14 @@ public class MyTeamEntity {
     @Id
     private String userId;
     private Date regDate;
-//    private List<TeamDto> myTeamDtoList;
+    private int teamNo;
+//    private String teamName;
+//    private String sportsKind;
+//    private String place;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teamNo", referencedColumnName = "teamNo")
+    TeamEntity teamEntity;
 
     public String getUserId() {
         return userId;
@@ -33,11 +36,35 @@ public class MyTeamEntity {
         this.regDate = regDate;
     }
 
-//    public List<TeamDto> getMyTeamDtoList() {
-//        return myTeamDtoList;
+//    public String getSportsKind() {
+//        return sportsKind;
 //    }
 //
-//    public void setMyTeamDtoList(List<TeamDto> myTeamDtoList) {
-//        this.myTeamDtoList = myTeamDtoList;
+//    public void setSportsKind(String sportsKind) {
+//        this.sportsKind = sportsKind;
+//    }
+//
+//    public String getTeamName() {
+//        return teamName;
+//    }
+//
+//    public void setTeamName(String teamName) {
+//        this.teamName = teamName;
+//    }
+//
+//    public int getTeamNo() {
+//        return teamNo;
+//    }
+//
+//    public void setTeamNo(int teamNo) {
+//        this.teamNo = teamNo;
+//    }
+//
+//    public String getPlace() {
+//        return place;
+//    }
+//
+//    public void setPlace(String place) {
+//        this.place = place;
 //    }
 }
