@@ -6,6 +6,9 @@ import com.example.twsServer.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TeamService {
 
@@ -31,5 +34,12 @@ public class TeamService {
         teamDto.setPlace(teamEntity.getPlace());
 
         return teamDto;
+    }
+
+    public List<TeamDto> getAllTeams() {
+        List<TeamEntity> teams = teamRepository.findAll();
+        return teams.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }

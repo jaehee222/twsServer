@@ -2,6 +2,8 @@ package com.example.twsServer.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "Team")
 public class TeamEntity {
@@ -12,8 +14,8 @@ public class TeamEntity {
     private String sportsKind;
     private String place;
 
-    @OneToOne(mappedBy = "team")
-    MyTeamEntity myTeamEntity;
+    @OneToMany(mappedBy = "teamEntity")
+    private Set<MyTeamEntity> myTeamEntity;
 
     public int getTeamNo() {
         return teamNo;
@@ -45,5 +47,13 @@ public class TeamEntity {
 
     public void setPlace(String place) {
         this.place = place;
+    }
+
+    public Set<MyTeamEntity> getMyTeamEntity() {
+        return myTeamEntity;
+    }
+
+    public void setMyTeamEntity(Set<MyTeamEntity> myTeamEntity) {
+        this.myTeamEntity = myTeamEntity;
     }
 }

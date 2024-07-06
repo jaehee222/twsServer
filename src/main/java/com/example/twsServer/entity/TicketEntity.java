@@ -1,9 +1,6 @@
 package com.example.twsServer.entity;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -12,7 +9,8 @@ import java.util.Date;
 public class TicketEntity {
 
     @Id
-    private TicketId ticketId;
+    private int ticketNo;
+    private String ticketName;
     private int homeTeamNo;
     private int awayTeamNo;
     private Date gameDate;
@@ -26,12 +24,20 @@ public class TicketEntity {
     private String ticketContent;
 
     // getters and setters
-    public TicketId getTicketId() {
-        return ticketId;
+    public int getTicketNo() {
+        return ticketNo;
     }
 
-    public void setTicketId(TicketId ticketId) {
-        this.ticketId = ticketId;
+    public void setTicketNo(int ticketNo) {
+        this.ticketNo = ticketNo;
+    }
+
+    public String getTicketName() {
+        return ticketName;
+    }
+
+    public void setTicketName(String ticketName) {
+        this.ticketName = ticketName;
     }
 
     public int getHomeTeamNo() {

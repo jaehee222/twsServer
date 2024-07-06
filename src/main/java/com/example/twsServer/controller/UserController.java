@@ -20,12 +20,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 단순한 테스트용 API 예제
-    @GetMapping("/test")
-    public String getSampleMessage() {
-        return "Hi, I'm Spring!";
-    }
-
     // ID 중복 체크 API
     @GetMapping("/checkId")
     public boolean checkId(@RequestParam String userId) {
@@ -56,7 +50,7 @@ public class UserController {
 
         
         // 나중에 이메일 전송 로직 구현 필요
-        return ResponseEntity.status(HttpStatus.CREATED).body("end Email!");
+        return ResponseEntity.status(HttpStatus.CREATED).body("send Email!");
     }
 
     // 사용자 회원가입 API
