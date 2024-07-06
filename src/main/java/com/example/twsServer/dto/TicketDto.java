@@ -1,6 +1,6 @@
 package com.example.twsServer.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class TicketDto {
 
@@ -8,7 +8,7 @@ public class TicketDto {
     private String ticketName;
     private int homeTeamNo;
     private int awayTeamNo;
-    private Date gameDate;
+    private LocalDate gameDate;
     private int homeScore;
     private int awayScore;
     private char result;
@@ -17,6 +17,9 @@ public class TicketDto {
     private int price;
     private String userId;
     private String ticketContent;
+
+    // 조회기준
+    private String searchCriteria;
 
     public int getTicketNo() {
         return ticketNo;
@@ -50,11 +53,11 @@ public class TicketDto {
         this.awayTeamNo = awayTeamNo;
     }
 
-    public Date getGameDate() {
+    public LocalDate getGameDate() {
         return gameDate;
     }
 
-    public void setGameDate(Date gameDate) {
+    public void setGameDate(LocalDate gameDate) {
         this.gameDate = gameDate;
     }
 
@@ -120,5 +123,13 @@ public class TicketDto {
 
     public void setTicketContent(String ticketContent) {
         this.ticketContent = ticketContent;
+    }
+
+    public String getSearchCriteria() {
+        return searchCriteria;
+    }
+
+    public void setSearchCriteria(String searchCriteria) {
+        this.searchCriteria = searchCriteria;
     }
 }

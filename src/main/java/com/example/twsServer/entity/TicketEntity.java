@@ -2,18 +2,19 @@ package com.example.twsServer.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Ticket")
 public class TicketEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ticketNo;
     private String ticketName;
     private int homeTeamNo;
     private int awayTeamNo;
-    private Date gameDate;
+    private LocalDate gameDate;
     private int homeScore;
     private int awayScore;
     private char result;
@@ -56,11 +57,11 @@ public class TicketEntity {
         this.awayTeamNo = awayTeamNo;
     }
 
-    public Date getGameDate() {
+    public LocalDate getGameDate() {
         return gameDate;
     }
 
-    public void setGameDate(Date gameDate) {
+    public void setGameDate(LocalDate gameDate) {
         this.gameDate = gameDate;
     }
 
