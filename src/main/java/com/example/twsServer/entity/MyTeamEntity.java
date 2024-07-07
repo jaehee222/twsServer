@@ -13,7 +13,8 @@ public class MyTeamEntity {
     private Date regDate;
     private int teamNo;
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "teamNo", insertable = false, updatable = false)
     private TeamEntity teamEntity;
 
     public String getUserId() {
@@ -47,5 +48,4 @@ public class MyTeamEntity {
     public void setTeamEntity(TeamEntity teamEntity) {
         this.teamEntity = teamEntity;
     }
-
 }

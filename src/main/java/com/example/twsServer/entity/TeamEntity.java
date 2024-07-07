@@ -9,13 +9,14 @@ import java.util.Set;
 public class TeamEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int teamNo;
     private String teamName;
     private String sportsKind;
     private String place;
 
-    @OneToMany(mappedBy = "teamEntity")
-    private Set<MyTeamEntity> myTeamEntity;
+//    @OneToOne(mappedBy = "teamEntity")
+//    private MyTeamEntity myTeamEntity;
 
     public int getTeamNo() {
         return teamNo;
@@ -49,11 +50,11 @@ public class TeamEntity {
         this.place = place;
     }
 
-    public Set<MyTeamEntity> getMyTeamEntity() {
-        return myTeamEntity;
-    }
-
-    public void setMyTeamEntity(Set<MyTeamEntity> myTeamEntity) {
-        this.myTeamEntity = myTeamEntity;
-    }
+//    public MyTeamEntity getMyTeamEntity() {
+//        return myTeamEntity;
+//    }
+//
+//    public void setMyTeamEntity(MyTeamEntity myTeamEntity) {
+//        this.myTeamEntity = myTeamEntity;
+//    }
 }
