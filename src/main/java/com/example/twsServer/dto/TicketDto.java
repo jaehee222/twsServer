@@ -18,7 +18,7 @@ public class TicketDto {
     private String userId;
     private String ticketContent;
 
-    // 조회기준
+    // 게시물 조회 기준
     private String searchCriteria;
 
     public int getTicketNo() {

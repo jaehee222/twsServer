@@ -2,6 +2,7 @@ package com.example.twsServer.controller;
 
 import com.example.twsServer.dto.TicketDto;
 import com.example.twsServer.entity.TicketEntity;
+import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.service.TicketService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class TicketController {
 
         // 미/오입력 오류 추가예정..
 
-        boolean isTicketEntry = ticketService.newEntry(userId, ticketDto);
+        boolean isNewTicket = ticketService.newEntry(userId, ticketDto);
 
-        if (isTicketEntry) {
+        if (isNewTicket) {
             return ResponseEntity.status(HttpStatus.CREATED).body("ticket create success");
         } else {
             return ResponseEntity.badRequest().body("ticket create fail");
@@ -45,8 +46,9 @@ public class TicketController {
     }
 
     @PostMapping("/postView")
-    public ResponseEntity<?> postView(HttpSession session, @RequestBody TicketDto ticketDto) {
+    public ResponseEntity<Object> postView(HttpSession session, @RequestBody TicketDto ticketDto) {
         String userId = (String) session.getAttribute("userId");
+
         if (userId == null) {
             // 세션에 userId가 없을 때, ResponseEntity를 사용하여 오류 응답을 반환
             return ResponseEntity.badRequest().body("userId is null");
@@ -54,10 +56,28 @@ public class TicketController {
         try {
             List<TicketDto> result = ticketService.postView(userId, ticketDto);
             return ResponseEntity.ok(result);
+        } catch (ValidationException e) {
+            throw e;
         } catch (Exception e) {
-            // 예외가 발생한 경우, 클라이언트에게 오류 응답을 반환한다.
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to process ticket: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/deleteEntry")
+    public ResponseEntity<Object> deleteEntry(HttpSession session, @RequestBody TicketDto ticketDto){
+        String userId = (String) session.getAttribute("userId");
+
+        if (userId == null) {
+            return ResponseEntity.badRequest().body("userId is null");
+        }
+
+        boolean isDelTicket = ticketService.deleteEntry(userId, ticketDto);
+
+        if (isDelTicket) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("ticket delete success");
+        } else {
+            return ResponseEntity.badRequest().body("ticket delete fail");
         }
     }
 }

@@ -11,9 +11,11 @@ import java.util.List;
 
 public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
 
-    List<TicketDto> findByUserId(String userId);
+    List<TicketEntity> findByUserId(String userId);
 
-    List<TicketDto> findByUserIdAndGameDate(String userId, LocalDate gameDate);
+    List<TicketEntity> findByUserIdAndGameDate(String userId, LocalDate gameDate);
 
-    List<TicketDto> findByTicketNo(int ticketNo);
+    List<TicketEntity> findByTicketNo(int ticketNo);
+
+    void deleteByTicketNo(int ticketNo);
 }
