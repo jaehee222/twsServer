@@ -1,7 +1,6 @@
 package com.example.twsServer.controller;
 
 import com.example.twsServer.dto.TicketDto;
-import com.example.twsServer.entity.TicketEntity;
 import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.service.TicketService;
 import jakarta.servlet.http.HttpSession;
@@ -33,8 +32,24 @@ public class TicketController {
         if (userId == null) {
             return ResponseEntity.badRequest().body("userId is null");
         }
-
-        // 미/오입력 오류 추가예정..
+        if (ticketDto.getHomeTeamNo() == null) {
+            return ResponseEntity.badRequest().body("homeTeamNo is null");
+        }
+        if (ticketDto.getAwayTeamNo() == null) {
+            return ResponseEntity.badRequest().body("awayTeamNo is null");
+        }
+        if (ticketDto.getGameDate() == null) {
+            return ResponseEntity.badRequest().body("gameDate is null");
+        }
+        if (ticketDto.getHomeScore() == null) {
+            return ResponseEntity.badRequest().body("homeScore is null");
+        }
+        if (ticketDto.getAwayScore() == null) {
+            return ResponseEntity.badRequest().body("awayScore is null");
+        }
+        if (ticketDto.getTicketContent() == null || ticketDto.getTicketContent().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("content is null");
+        }
 
         boolean isNewTicket = ticketService.newEntry(userId, ticketDto);
 
@@ -65,7 +80,7 @@ public class TicketController {
     }
 
     @PostMapping("/deleteEntry")
-    public ResponseEntity<Object> deleteEntry(HttpSession session, @RequestBody TicketDto ticketDto){
+    public ResponseEntity<Object> deleteEntry(HttpSession session, @RequestBody TicketDto ticketDto) {
         String userId = (String) session.getAttribute("userId");
 
         if (userId == null) {

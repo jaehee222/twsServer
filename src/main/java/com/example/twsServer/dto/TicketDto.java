@@ -4,28 +4,28 @@ import java.time.LocalDate;
 
 public class TicketDto {
 
-    private int ticketNo;
+    private Integer ticketNo;
     private String ticketName;
-    private int homeTeamNo;
-    private int awayTeamNo;
+    private Integer homeTeamNo;
+    private Integer awayTeamNo;
     private LocalDate gameDate;
-    private int homeScore;
-    private int awayScore;
-    private char result;
+    private Integer homeScore;
+    private Integer awayScore;
+    private String result;
     private String seat;
     private String photo;
-    private int price;
+    private Integer price;
     private String userId;
     private String ticketContent;
 
     // 게시물 조회 기준
     private String searchCriteria;
 
-    public int getTicketNo() {
+    public Integer getTicketNo() {
         return ticketNo;
     }
 
-    public void setTicketNo(int ticketNo) {
+    public void setTicketNo(Integer ticketNo) {
         this.ticketNo = ticketNo;
     }
 
@@ -37,19 +37,19 @@ public class TicketDto {
         this.ticketName = ticketName;
     }
 
-    public int getHomeTeamNo() {
+    public Integer getHomeTeamNo() {
         return homeTeamNo;
     }
 
-    public void setHomeTeamNo(int homeTeamNo) {
+    public void setHomeTeamNo(Integer homeTeamNo) {
         this.homeTeamNo = homeTeamNo;
     }
 
-    public int getAwayTeamNo() {
+    public Integer getAwayTeamNo() {
         return awayTeamNo;
     }
 
-    public void setAwayTeamNo(int awayTeamNo) {
+    public void setAwayTeamNo(Integer awayTeamNo) {
         this.awayTeamNo = awayTeamNo;
     }
 
@@ -61,27 +61,27 @@ public class TicketDto {
         this.gameDate = gameDate;
     }
 
-    public int getHomeScore() {
+    public Integer getHomeScore() {
         return homeScore;
     }
 
-    public void setHomeScore(int homeScore) {
+    public void setHomeScore(Integer homeScore) {
         this.homeScore = homeScore;
     }
 
-    public int getAwayScore() {
+    public Integer getAwayScore() {
         return awayScore;
     }
 
-    public void setAwayScore(int awayScore) {
+    public void setAwayScore(Integer awayScore) {
         this.awayScore = awayScore;
     }
 
-    public char getResult() {
+    public String getResult() {
         return result;
     }
 
-    public void setResult(char result) {
+    public void setResult(String result) {
         this.result = result;
     }
 
@@ -101,11 +101,11 @@ public class TicketDto {
         this.photo = photo;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 

@@ -29,13 +29,12 @@ public class TicketService {
         try {
             TicketEntity ticket = null;
             // 티켓 번호로 기존 티켓 조회
-            if (ticketDto.getTicketNo() != 0) {
+            if (ticketDto.getTicketNo() != null) {
                 List<TicketEntity> existingTickets = ticketRepository.findByUserIdAndTicketNo(userId, ticketDto.getTicketNo());
                 if (!existingTickets.isEmpty()) {
                     // 리스트에서 첫 번째 티켓을 가져옴 (단일 티켓을 가져오기 위해)
                     ticket = existingTickets.get(0);
                 } else {
-                    // 새 티켓 생성
                     throw new ValidationException("사용자가 가지고 있는 티켓이 아닙니다.");
                 }
             } else {
