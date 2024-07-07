@@ -1,7 +1,6 @@
 package com.example.twsServer.controller;
 
-import com.example.twsServer.entity.MyTeamEntity;
-import com.example.twsServer.entity.TeamEntity;
+import com.example.twsServer.dto.TeamDto;
 import com.example.twsServer.service.MyTeamService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ public class MyTeamController {
     }
 
     @GetMapping("/user")
-    public List<MyTeamEntity> getMyTeam(HttpSession session) {
+    public List<TeamDto> getMyTeam(HttpSession session) {
         if (session != null) {
             String userId = (String) session.getAttribute("userId");
             if (userId != null) {

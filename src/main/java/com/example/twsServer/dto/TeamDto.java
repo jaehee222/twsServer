@@ -1,17 +1,17 @@
 package com.example.twsServer.dto;
 
 public class TeamDto {
-    private int teamNo;
+    private Integer teamNo;
     private String teamName;
     private String sportsKind;
     private String place;
 
-    public void setTeamNo(int teamNo) {
-        this.teamNo = teamNo;
+    public Integer getTeamNo() {
+        return teamNo;
     }
 
-    public int getTeamNo() {
-        return teamNo;
+    public void setTeamNo(Integer teamNo) {
+        this.teamNo = teamNo;
     }
 
     public void setTeamName(String teamName) {

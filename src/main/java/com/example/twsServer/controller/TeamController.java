@@ -21,7 +21,7 @@ public class TeamController {
     // 팀정보 가져옴
     @PostMapping("/getInfo")
     public TeamDto findTeamInfo (@RequestBody TeamDto teamDto){
-        int teamNo = teamDto.getTeamNo();
+        Integer teamNo = teamDto.getTeamNo();
         return  teamService.findTeamInfo(teamNo);
     }
 
@@ -29,4 +29,5 @@ public class TeamController {
     public List<TeamDto> getAllTeams() {
         return teamService.getAllTeams();
     }
+
 }

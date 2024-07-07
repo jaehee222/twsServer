@@ -11,11 +11,7 @@ public class MyTeamEntity {
     @Id
     private String userId;
     private Date regDate;
-    private int teamNo;
-
-    @OneToOne
-    @JoinColumn(name = "teamNo", insertable = false, updatable = false)
-    private TeamEntity teamEntity;
+    private Integer teamNo;
 
     public String getUserId() {
         return userId;
@@ -33,19 +29,11 @@ public class MyTeamEntity {
         this.regDate = regDate;
     }
 
-    public int getTeamNo() {
+    public Integer getTeamNo() {
         return teamNo;
     }
 
-    public void setTeamNo(int teamNo) {
+    public void setTeamNo(Integer teamNo) {
         this.teamNo = teamNo;
-    }
-
-    public TeamEntity getTeamEntity() {
-        return teamEntity;
-    }
-
-    public void setTeamEntity(TeamEntity teamEntity) {
-        this.teamEntity = teamEntity;
     }
 }

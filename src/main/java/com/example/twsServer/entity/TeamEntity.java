@@ -15,9 +15,6 @@ public class TeamEntity {
     private String sportsKind;
     private String place;
 
-//    @OneToOne(mappedBy = "teamEntity")
-//    private MyTeamEntity myTeamEntity;
-
     public int getTeamNo() {
         return teamNo;
     }

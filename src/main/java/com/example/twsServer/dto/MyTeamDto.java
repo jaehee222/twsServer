@@ -5,7 +5,7 @@ import java.util.Date;
 public class MyTeamDto {
     private String userId;
     private Date regDate;
-    private int teamNo;
+    private Integer teamNo;
     private String teamName;
     private String place;
     private String sportsKind;
@@ -26,11 +26,11 @@ public class MyTeamDto {
         this.regDate = regDate;
     }
 
-    public int getTeamNo() {
+    public Integer getTeamNo() {
         return teamNo;
     }
 
-    public void setTeamNo(int teamNo) {
+    public void setTeamNo(Integer teamNo) {
         this.teamNo = teamNo;
     }
 
