@@ -1,9 +1,6 @@
 package com.example.twsServer.repository;
 
-import com.example.twsServer.dto.TeamDto;
-import com.example.twsServer.dto.TicketDto;
 import com.example.twsServer.entity.TicketEntity;
-import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -15,7 +12,7 @@ public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
 
     List<TicketEntity> findByUserIdAndGameDate(String userId, LocalDate gameDate);
 
-    List<TicketEntity> findByTicketNo(int ticketNo);
+    List<TicketEntity> findByUserIdAndTicketNo(String userId, int ticketNo);
 
-    void deleteByTicketNo(int ticketNo);
+    void deleteByUserIdAndTicketNo(String userId, int ticketNo);
 }

@@ -24,10 +24,26 @@ public class TicketService {
         this.teamRepository = teamRepository;
     }
 
+    // 쿼리에 ticketNo값 넣으면 수정, 없으면 추가되는 로직..
     public boolean newEntry(String userId, TicketDto ticketDto) {
         try {
-
-            TicketEntity ticket = new TicketEntity();
+            TicketEntity ticket = null;
+            System.out.println(ticketDto.getTicketNo());
+            // 티켓 번호로 기존 티켓 조회
+            if (ticketDto.getTicketNo() != 0) {
+                System.out.println(userId);
+                List<TicketEntity> existingTickets = ticketRepository.findByUserIdAndTicketNo(userId, ticketDto.getTicketNo());
+                if (!existingTickets.isEmpty()) {
+                    // 리스트에서 첫 번째 티켓을 가져옴 (단일 티켓을 가져오기 위해)
+                    ticket = existingTickets.get(0);
+                } else {
+                    // 새 티켓 생성
+                    throw new ValidationException("사용자가 가지고 있는 티켓이 아닙니다.");
+                }
+            } else {
+                // 새 티켓 생성
+                ticket = new TicketEntity();
+            }
 
             String homeTeamName = teamRepository.findByTeamNo(ticketDto.getHomeTeamNo()).getTeamName();
             String awayTeamName = teamRepository.findByTeamNo(ticketDto.getAwayTeamNo()).getTeamName();
@@ -47,10 +63,11 @@ public class TicketService {
             ticket.setTicketContent(ticketDto.getTicketContent());
 
             ticketRepository.save(ticket);
+
+            return true;
         } catch (Exception e) {
-            new ValidationException("exceptionError:" + e.getMessage());
+            throw new ValidationException("exceptionError:" + e.getMessage());
         }
-        return true;
     }
 
     public List<TicketDto> postView(String userId, TicketDto ticketDto) {
@@ -66,16 +83,16 @@ public class TicketService {
                 ticketEntity = ticketRepository.findByUserIdAndGameDate(userId, ticketDto.getGameDate());
                 // 티켓명에 해당하는 글목록 (글 상세보기)
             } else if ("Detail".equals(searchCriteria)) {
-                ticketEntity = ticketRepository.findByTicketNo(ticketDto.getTicketNo());
+                ticketEntity = ticketRepository.findByUserIdAndTicketNo(userId, ticketDto.getTicketNo());
                 if (ticketEntity.size() > 1) {
-                    new ValidationException("DB error! 하나이상의 결과 출력");
+                    throw new ValidationException("DB error! 하나이상의 결과 출력");
                 }
             } else {
-                throw new IllegalArgumentException("searchCriteria invaild");
+                throw new ValidationException("searchCriteria invaild");
             }
             resultDto = convertToDto(ticketEntity);
         } catch (Exception e) {
-            new ValidationException("exceptionError:" + e.getMessage());
+            throw new ValidationException("exceptionError:" + e.getMessage());
         }
         return resultDto;
     }
@@ -83,7 +100,7 @@ public class TicketService {
     @Transactional
     public boolean deleteEntry(String userId, TicketDto ticketDto) {
         try {
-            ticketRepository.deleteByTicketNo(ticketDto.getTicketNo());
+            ticketRepository.deleteByUserIdAndTicketNo(userId, ticketDto.getTicketNo());
             return true; // 삭제 성공
         } catch (EmptyResultDataAccessException e) {
             return false; // 삭제할 엔티티가 없음
