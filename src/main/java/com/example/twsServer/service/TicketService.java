@@ -28,10 +28,8 @@ public class TicketService {
     public boolean newEntry(String userId, TicketDto ticketDto) {
         try {
             TicketEntity ticket = null;
-            System.out.println(ticketDto.getTicketNo());
             // 티켓 번호로 기존 티켓 조회
             if (ticketDto.getTicketNo() != 0) {
-                System.out.println(userId);
                 List<TicketEntity> existingTickets = ticketRepository.findByUserIdAndTicketNo(userId, ticketDto.getTicketNo());
                 if (!existingTickets.isEmpty()) {
                     // 리스트에서 첫 번째 티켓을 가져옴 (단일 티켓을 가져오기 위해)
@@ -72,9 +70,11 @@ public class TicketService {
 
     public List<TicketDto> postView(String userId, TicketDto ticketDto) {
         List<TicketDto> resultDto = new ArrayList<>();
+
         try {
             var searchCriteria = ticketDto.getSearchCriteria();
             List<TicketEntity> ticketEntity = new ArrayList<>();
+
             // 사용자에 해당하는 전체 글목록
             if ("All".equals(searchCriteria)) {
                 ticketEntity = ticketRepository.findByUserId(userId);
@@ -90,7 +90,9 @@ public class TicketService {
             } else {
                 throw new ValidationException("searchCriteria invaild");
             }
+
             resultDto = convertToDto(ticketEntity);
+
         } catch (Exception e) {
             throw new ValidationException("exceptionError:" + e.getMessage());
         }
