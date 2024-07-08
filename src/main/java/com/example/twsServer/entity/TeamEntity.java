@@ -46,12 +46,4 @@ public class TeamEntity {
     public void setPlace(String place) {
         this.place = place;
     }
-
-//    public MyTeamEntity getMyTeamEntity() {
-//        return myTeamEntity;
-//    }
-//
-//    public void setMyTeamEntity(MyTeamEntity myTeamEntity) {
-//        this.myTeamEntity = myTeamEntity;
-//    }
 }

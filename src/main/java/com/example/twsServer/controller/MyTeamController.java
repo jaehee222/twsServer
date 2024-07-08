@@ -1,9 +1,14 @@
 package com.example.twsServer.controller;
 
+import com.example.twsServer.dto.MyTeamDto;
 import com.example.twsServer.dto.TeamDto;
+import com.example.twsServer.dto.TicketDto;
+import com.example.twsServer.entity.MyTeamEntity;
 import com.example.twsServer.service.MyTeamService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +24,7 @@ public class MyTeamController {
         this.myTeamService = myTeamService;
     }
 
-    @GetMapping("/user")
+    @GetMapping("/list")
     public List<TeamDto> getMyTeam(HttpSession session) {
         if (session != null) {
             String userId = (String) session.getAttribute("userId");
@@ -36,4 +41,33 @@ public class MyTeamController {
         }
     }
 
+    @GetMapping("/newMyTeam/{teamNo}")
+    public ResponseEntity<Object> addMyTeam(HttpSession session, @PathVariable Integer teamNo) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.badRequest().body("userId is null");
+        }
+
+        try {
+            myTeamService.createMyTeam(userId, teamNo);
+            return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Create myTeam success(teamNo: %d)", teamNo));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(String.format("Create MyTeam failed(teamNo: %d): ", teamNo) + e.getMessage());
+        }
+    }
+
+    @GetMapping("/deleteMyTeam/{teamNo}")
+    public ResponseEntity<Object> deleteMyTeam(HttpSession session, @PathVariable Integer teamNo) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.badRequest().body("userId is null");
+        }
+
+        boolean isDelMyTeam = myTeamService.deleteMyTeam(userId, teamNo);
+        if (isDelMyTeam) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Delete myTeam success(teamNo: %d)", teamNo));
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Delete myTeam failed(teamNo: %d)", teamNo));
+        }
+    }
 }

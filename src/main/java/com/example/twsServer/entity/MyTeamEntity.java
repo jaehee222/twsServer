@@ -1,6 +1,5 @@
 package com.example.twsServer.entity;
 
-import com.example.twsServer.dto.MyTeamDto;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -8,17 +7,18 @@ import java.util.Date;
 @Entity
 @Table(name = "MyTeam")
 public class MyTeamEntity {
-    @Id
-    private String userId;
-    private Date regDate;
-    private Integer teamNo;
+    @EmbeddedId
+    private MyTeamId id;
 
-    public String getUserId() {
-        return userId;
+    @Column(name = "reg_date")
+    private Date regDate;
+
+    public MyTeamId getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(MyTeamId id) {
+        this.id = id;
     }
 
     public Date getRegDate() {
@@ -27,13 +27,5 @@ public class MyTeamEntity {
 
     public void setRegDate(Date regDate) {
         this.regDate = regDate;
-    }
-
-    public Integer getTeamNo() {
-        return teamNo;
-    }
-
-    public void setTeamNo(Integer teamNo) {
-        this.teamNo = teamNo;
     }
 }
