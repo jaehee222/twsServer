@@ -7,6 +7,9 @@ import com.example.twsServer.repository.TeamRepository;
 import com.example.twsServer.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -76,7 +79,7 @@ public class TicketService {
 
             // 사용자에 해당하는 전체 글목록
             if ("All".equals(searchCriteria)) {
-                ticketEntity = ticketRepository.findByUserId(userId);
+                ticketEntity = getPageOfTicket(userId, ticketDto.getPage(), ticketDto.getSize());
                 // 조회날짜에 해당하는 글목록 (달력)
             } else if ("Date".equals(searchCriteria)) {
                 ticketEntity = ticketRepository.findByUserIdAndGameDate(userId, ticketDto.getGameDate());
@@ -96,6 +99,14 @@ public class TicketService {
             throw new ValidationException("exceptionError:" + e.getMessage());
         }
         return resultDto;
+    }
+
+
+    private List<TicketEntity> getPageOfTicket(String userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TicketEntity> list = ticketRepository.findByUserId(userId, pageable);
+
+        return list.getContent();
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import com.example.twsServer.entity.UserEntity;
 import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.repository.MyTeamRepository;
 import com.example.twsServer.repository.TeamRepository;
+import com.example.twsServer.repository.TicketRepository;
 import com.example.twsServer.repository.UserRepository;
 import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
@@ -16,20 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class MyTeamService {
     private final MyTeamRepository myTeamRepository;
     private final TeamRepository teamRepository;
+    private final TicketRepository ticketRepository;
 
     @Autowired
-    public MyTeamService(MyTeamRepository myTeamRepository, TeamRepository teamRepository) {
+    public MyTeamService(MyTeamRepository myTeamRepository, TeamRepository teamRepository, TicketRepository ticketRepository) {
         this.myTeamRepository = myTeamRepository;
         this.teamRepository = teamRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     // MyTeam 조회
@@ -49,7 +50,7 @@ public class MyTeamService {
     }
 
     // MyTeam 추가
-    public boolean createMyTeam(String userId, Integer teamNo) {
+    public boolean createMyTeam(String userId, int teamNo) {
         // Check valid teamNo
         TeamEntity team = teamRepository.findByTeamNo(teamNo);
         if (team == null) {
@@ -72,7 +73,7 @@ public class MyTeamService {
 
     // MyTeam 삭제
     @Transactional
-    public boolean deleteMyTeam(String userId, Integer teamNo) {
+    public boolean deleteMyTeam(String userId, int teamNo) {
         try {
             myTeamRepository.deleteByIdUserIdAndIdTeamNo(userId, teamNo);
             return true;
@@ -83,6 +84,84 @@ public class MyTeamService {
             System.out.printf("Failed to delete MyTeam for userId: %s, teamNo: %d. Reason: %s\n", userId, teamNo, e.getMessage());
             return false;
         }
+    }
+
+    // 승률 조회
+    private enum Result {
+        WIN, TIE, LOSE
+    }
+    public TeamDto getTeamRate(String userId, int teamNo) {
+
+        // FIXME 1-1 까지만 진행됨 수정 필요! by hwjeon
+        try {
+            HashMap<Result, Integer> homeCnt = new HashMap<>();
+            HashMap<Result, Integer> awayCnt = new HashMap<>();
+
+            List<Map<String, Object>> infoList = ticketRepository.findTicketsByUserIdAndTeamNo(userId, teamNo);
+
+            System.out.println(" ##### 1 ##### ");
+
+            String teamName = "";
+            String sportsKind = "";
+            for (Map<String, Object> row : infoList) {
+
+                System.out.println(" ##### 1-1 ##### ");
+
+                String type = (String) row.get("type");
+                String result = (String) row.get("result");
+                sportsKind = (String) row.get("sportsKind");
+                teamName = (String) row.get("teamName");
+
+                System.out.println(" ##### 1-2 ##### ");
+
+                if (type.equals("HOME")) {
+                    homeCnt = SetHashMap(result, homeCnt);
+
+                    System.out.println(" ##### 1-3 ##### ");
+
+                } else {
+                    awayCnt = SetHashMap(result, awayCnt);
+                }
+            }
+            System.out.println(" ##### 2 ##### ");
+
+            int homeTotal = homeCnt.get(Result.WIN) + homeCnt.get(Result.TIE) + homeCnt.get(Result.LOSE);
+            int awayTotal = awayCnt.get(Result.WIN) + awayCnt.get(Result.TIE) + awayCnt.get(Result.LOSE);
+
+            System.out.println(" ##### 3 ##### ");
+
+            double homeRate = (double) homeCnt.get(Result.WIN) / homeTotal;
+            double awayRate = (double) awayCnt.get(Result.WIN) / awayTotal;
+            double totalRate = (double) homeRate + awayRate;
+
+            TeamDto teamDto;
+            teamDto = new TeamDto(teamNo,teamName, sportsKind, homeRate, awayRate, totalRate);
+
+            return teamDto;
+        } catch (Exception e) {
+            throw new ValidationException("get myTeamRate Error");
+        }
+    }
+
+    private HashMap<Result, Integer> SetHashMap(String result, HashMap<Result, Integer> map) {
+        switch(result) {
+            case "w" : {
+                Integer cnt = map.get(Result.WIN);
+                map.put(Result.WIN, ++cnt);
+                break;
+            }
+            case "t" : {
+                Integer cnt = map.get(Result.TIE);
+                map.put(Result.TIE, ++cnt);
+                break;
+            }
+            case "l" : {
+                Integer cnt = map.get(Result.LOSE);
+                map.put(Result.LOSE, ++cnt);
+                break;
+            }
+        }
+        return map;
     }
 
     // TeamEntity를 TeamDto로 변환하는 메서드

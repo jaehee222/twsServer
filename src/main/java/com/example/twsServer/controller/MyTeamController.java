@@ -42,7 +42,7 @@ public class MyTeamController {
     }
 
     @GetMapping("/newMyTeam/{teamNo}")
-    public ResponseEntity<Object> addMyTeam(HttpSession session, @PathVariable Integer teamNo) {
+    public ResponseEntity<Object> addMyTeam(HttpSession session, @PathVariable(value="teamNo") Integer teamNo) {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             return ResponseEntity.badRequest().body("userId is null");
@@ -57,7 +57,7 @@ public class MyTeamController {
     }
 
     @GetMapping("/deleteMyTeam/{teamNo}")
-    public ResponseEntity<Object> deleteMyTeam(HttpSession session, @PathVariable Integer teamNo) {
+    public ResponseEntity<Object> deleteMyTeam(HttpSession session, @PathVariable(value = "teamNo") Integer teamNo) {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             return ResponseEntity.badRequest().body("userId is null");
@@ -68,6 +68,21 @@ public class MyTeamController {
             return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Delete myTeam success(teamNo: %d)", teamNo));
         } else {
             return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Delete myTeam failed(teamNo: %d)", teamNo));
+        }
+    }
+
+    @GetMapping("/rate/{teamNo}")
+    public ResponseEntity<Object> getMyTeamRate(HttpSession session, @PathVariable(value = "teamNo") Integer teamNo) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            return null;
+        }
+
+        try {
+            TeamDto teamDto = myTeamService.getTeamRate(userId, teamNo);
+            return ResponseEntity.ok(teamDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(String.format("get MyTeam rate failed(teamNo: %d): ", teamNo) + e.getMessage());
         }
     }
 }

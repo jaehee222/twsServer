@@ -18,6 +18,10 @@ public class TicketDto {
     private String userId;
     private String ticketContent;
 
+    // paging
+    private int size;
+    private int page;
+
     // 게시물 조회 기준
     private String searchCriteria;
 
@@ -131,5 +135,21 @@ public class TicketDto {
 
     public void setSearchCriteria(String searchCriteria) {
         this.searchCriteria = searchCriteria;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 }
