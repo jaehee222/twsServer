@@ -92,10 +92,17 @@ public class MyTeamService {
     }
     public TeamDto getTeamRate(String userId, int teamNo) {
 
-        // FIXME 1-1 까지만 진행됨 수정 필요! by hwjeon
         try {
-            HashMap<Result, Integer> homeCnt = new HashMap<>();
-            HashMap<Result, Integer> awayCnt = new HashMap<>();
+            HashMap<Result, Integer> homeCnt = new HashMap<Result, Integer>() {{
+                put(Result.WIN, 0);
+                put(Result.TIE, 0);
+                put(Result.LOSE, 0);
+            }};
+            HashMap<Result, Integer> awayCnt = new HashMap<Result, Integer>() {{
+                put(Result.WIN, 0);
+                put(Result.TIE, 0);
+                put(Result.LOSE, 0);
+            }};
 
             List<Map<String, Object>> infoList = ticketRepository.findTicketsByUserIdAndTeamNo(userId, teamNo);
 
@@ -105,34 +112,24 @@ public class MyTeamService {
             String sportsKind = "";
             for (Map<String, Object> row : infoList) {
 
-                System.out.println(" ##### 1-1 ##### ");
-
                 String type = (String) row.get("type");
-                String result = (String) row.get("result");
+                String result = (row.get("result")).toString();
                 sportsKind = (String) row.get("sportsKind");
                 teamName = (String) row.get("teamName");
 
-                System.out.println(" ##### 1-2 ##### ");
-
                 if (type.equals("HOME")) {
-                    homeCnt = SetHashMap(result, homeCnt);
-
-                    System.out.println(" ##### 1-3 ##### ");
-
+                    SetHashMap(result, homeCnt);
                 } else {
-                    awayCnt = SetHashMap(result, awayCnt);
+                    SetHashMap(result, awayCnt);
                 }
             }
-            System.out.println(" ##### 2 ##### ");
 
             int homeTotal = homeCnt.get(Result.WIN) + homeCnt.get(Result.TIE) + homeCnt.get(Result.LOSE);
             int awayTotal = awayCnt.get(Result.WIN) + awayCnt.get(Result.TIE) + awayCnt.get(Result.LOSE);
 
-            System.out.println(" ##### 3 ##### ");
-
             double homeRate = (double) homeCnt.get(Result.WIN) / homeTotal;
             double awayRate = (double) awayCnt.get(Result.WIN) / awayTotal;
-            double totalRate = (double) homeRate + awayRate;
+            double totalRate = homeRate + awayRate;
 
             TeamDto teamDto;
             teamDto = new TeamDto(teamNo,teamName, sportsKind, homeRate, awayRate, totalRate);
@@ -143,7 +140,7 @@ public class MyTeamService {
         }
     }
 
-    private HashMap<Result, Integer> SetHashMap(String result, HashMap<Result, Integer> map) {
+    private void SetHashMap(String result, HashMap<Result, Integer> map) {
         switch(result) {
             case "w" : {
                 Integer cnt = map.get(Result.WIN);
@@ -161,7 +158,6 @@ public class MyTeamService {
                 break;
             }
         }
-        return map;
     }
 
     // TeamEntity를 TeamDto로 변환하는 메서드
