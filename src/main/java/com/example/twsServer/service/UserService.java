@@ -1,13 +1,17 @@
 package com.example.twsServer.service;
 
 import com.example.twsServer.dto.UserDto;
+import com.example.twsServer.entity.TicketEntity;
 import com.example.twsServer.entity.UserEntity;
 import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -27,19 +31,45 @@ public class UserService {
     }
 
     // 회원가입
-    public UserDto join(UserDto userDto){
+    // 세션유무로 회원가입/회원정보수정으로 ..
+    public UserDto join(String userId, UserDto userDto) {
 
-        UserEntity user = new UserEntity();
+        UserEntity user = null;
+        try {
 
-        user.setUserId(userDto.getUserId());
-        user.setPassword(userDto.getPassword());
-        user.setNickName(userDto.getNickName());
-        user.setEmail(userDto.getEmail());
-        user.setRegDate(new Date());            // 가입일 자동셋팅
+            if (userId == null) {
+                // 회원가입
+                user = new UserEntity();
 
-        userRepository.save(user);
+                user.setUserId(userDto.getUserId());
+                user.setPassword(userDto.getPassword());
+                user.setNickName(userDto.getNickName());
+                user.setEmail(userDto.getEmail());
+                user.setRegDate(new Date());            // 가입일 자동셋팅
 
-        return userDto;
+            } else {
+                // 회원수정
+                UserEntity existingUser = userRepository.findByUserId(userId);
+                if (existingUser != null) {
+                    user = existingUser;
+                    if (userDto.getNickName() != null) {
+                        user.setNickName(userDto.getNickName());
+                    }
+                    if (userDto.getEmail() != null) {
+                        user.setEmail(userDto.getEmail());
+                    }
+                } else {
+                    throw new ValidationException("사용자를 찾을 수 없습니다!");
+                }
+            }
+            userRepository.save(user);
+            return userDto;
+
+        } catch (ValidationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     // 로그인

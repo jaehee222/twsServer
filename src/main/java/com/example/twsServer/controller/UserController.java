@@ -46,30 +46,37 @@ public class UserController {
         if (email == null) {
             ResponseEntity.badRequest().body("email is null");
         }
-
-
-        
         // 나중에 이메일 전송 로직 구현 필요
         return ResponseEntity.status(HttpStatus.CREATED).body("send Email!");
     }
 
     // 사용자 회원가입 API
     @PostMapping("/join")
-    public ResponseEntity<Object> join(@RequestBody UserDto userDto) {
-        if (userDto.getUserId() == null || userDto.getUserId().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("userId is null");
-        }
-        if (userDto.getPassword() == null || userDto.getPassword().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("password is null");
-        }
-        if (userDto.getNickName() == null || userDto.getNickName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("nickName is null");
-        }
-        if (userDto.getEmail() == null || userDto.getEmail().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("email is null");
+    public ResponseEntity<Object> join(HttpSession session, @RequestBody UserDto userDto) {
+
+        String userId = (String) session.getAttribute("userId");
+
+        if (userId == null) {
+            // 회원가입..
+            if (userDto.getUserId() == null || userDto.getUserId().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("userId is null");
+            }
+            if (userDto.getPassword() == null || userDto.getPassword().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("password is null");
+            }
+            if (userDto.getNickName() == null || userDto.getNickName().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("nickName is null");
+            }
+            if (userDto.getEmail() == null || userDto.getEmail().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("email is null");
+            }
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("join Success");
+        if (userService.join(userId, userDto) != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("join Success");
+        } else {
+            return ResponseEntity.badRequest().body("join fail!");
+        }
     }
 
     @GetMapping("/logout")

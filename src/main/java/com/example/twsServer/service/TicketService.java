@@ -31,6 +31,7 @@ public class TicketService {
     public boolean newEntry(String userId, TicketDto ticketDto) {
         try {
             TicketEntity ticket = null;
+
             // 티켓 번호로 기존 티켓 조회
             if (ticketDto.getTicketNo() != null) {
                 List<TicketEntity> existingTickets = ticketRepository.findByUserIdAndTicketNo(userId, ticketDto.getTicketNo());
@@ -50,18 +51,39 @@ public class TicketService {
 
             // 티켓이름 자동셋팅
             ticket.setTicketName(homeTeamName + " VS " + awayTeamName);
-            ticket.setHomeTeamNo(ticketDto.getHomeTeamNo());
-            ticket.setAwayTeamNo(ticketDto.getAwayTeamNo());
-            ticket.setGameDate(ticketDto.getGameDate());
-            ticket.setHomeScore(ticketDto.getHomeScore());
-            ticket.setAwayScore(ticketDto.getAwayScore());
-            ticket.setResult(ticketDto.getResult());
-            ticket.setSeat(ticketDto.getSeat());
-            ticket.setPhoto(ticketDto.getPhoto());
-            ticket.setPrice(ticketDto.getPrice());
-            ticket.setUserId(userId);
-            ticket.setTicketContent(ticketDto.getTicketContent());
 
+            if (ticketDto.getHomeTeamNo() != null) {
+                ticket.setHomeTeamNo(ticketDto.getHomeTeamNo());
+            }
+            if (ticketDto.getAwayTeamNo() != null) {
+                ticket.setAwayTeamNo(ticketDto.getAwayTeamNo());
+            }
+            if (ticketDto.getGameDate() != null) {
+                ticket.setGameDate(ticketDto.getGameDate());
+            }
+            if (ticketDto.getHomeScore() != null) {
+                ticket.setHomeScore(ticketDto.getHomeScore());
+            }
+            if (ticketDto.getAwayScore() != null) {
+                ticket.setAwayScore(ticketDto.getAwayScore());
+            }
+            if (ticketDto.getResult() != null) {
+                ticket.setResult(ticketDto.getResult());
+            }
+            if (ticketDto.getSeat() != null) {
+                ticket.setSeat(ticketDto.getSeat());
+            }
+            if (ticketDto.getPhoto() != null) {
+                ticket.setPhoto(ticketDto.getPhoto());
+            }
+            if (ticketDto.getPrice() != null) {
+                ticket.setPrice(ticketDto.getPrice());
+            }
+            if (ticketDto.getTicketContent() != null) {
+                ticket.setTicketContent(ticketDto.getTicketContent());
+            }
+
+            ticket.setUserId(userId);
             ticketRepository.save(ticket);
 
             return true;
@@ -69,6 +91,7 @@ public class TicketService {
             throw new ValidationException("exceptionError:" + e.getMessage());
         }
     }
+
 
     public List<TicketDto> postView(String userId, TicketDto ticketDto) {
         List<TicketDto> resultDto = new ArrayList<>();
