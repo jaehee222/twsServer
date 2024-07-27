@@ -20,6 +20,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/test")
+    public String test(){
+        return "Connect Success!";
+    }
+
     // ID 중복 체크 API
     @GetMapping("/checkId")
     public boolean checkId(@RequestParam String userId) {
