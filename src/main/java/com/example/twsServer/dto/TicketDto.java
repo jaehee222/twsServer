@@ -25,6 +25,8 @@ public class TicketDto {
     // 게시물 조회 기준
     private String searchCriteria;
 
+    private String sportsKind;
+
     public Integer getTicketNo() {
         return ticketNo;
     }
@@ -151,5 +153,13 @@ public class TicketDto {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public String getSportsKind() {
+        return sportsKind;
+    }
+
+    public void setSportsKind(String sportsKind) {
+        this.sportsKind = sportsKind;
     }
 }

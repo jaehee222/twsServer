@@ -21,9 +21,23 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    // 아이디 중복확인
+    // 중복확인
     public boolean idDoubleCheck(String UserId){
         if (userRepository.existsByUserId(UserId)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public boolean NickNameDoubleCheck(String NickName){
+        if (userRepository.existsByNickName(NickName)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public boolean emailDoubleCheck(String Email){
+        if (userRepository.existsByEmail(Email)) {
             return true;
         }else{
             return false;

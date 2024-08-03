@@ -31,6 +31,16 @@ public class UserController {
         return userService.idDoubleCheck(userId);
     }
 
+    @GetMapping("/checkNickname")
+    public boolean checkNickname(@RequestParam String nickName) {
+        return userService.NickNameDoubleCheck(nickName);
+    }
+
+    @GetMapping("/checkEmail")
+    public boolean checkEmail(@RequestParam String email) {
+        return userService.emailDoubleCheck(email);
+    }
+
     // 로그인 API
     @PostMapping("/login")
     public boolean login(HttpSession session, @RequestBody UserDto userDto) {

@@ -118,6 +118,7 @@ public class TicketService {
 
             resultDto = convertToDto(ticketEntity);
 
+
         } catch (Exception e) {
             throw new ValidationException("exceptionError:" + e.getMessage());
         }
@@ -159,6 +160,8 @@ public class TicketService {
             ticketDto.setPrice(ticketEntity.getPrice());
             ticketDto.setUserId(ticketEntity.getUserId());
             ticketDto.setTicketContent(ticketEntity.getTicketContent());
+
+            ticketDto.setSportsKind(teamRepository.findByTeamNo(ticketEntity.getHomeTeamNo()).getSportsKind());
 
             return ticketDto;
         }).collect(Collectors.toList());
