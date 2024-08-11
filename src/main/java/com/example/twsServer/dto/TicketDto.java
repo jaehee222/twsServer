@@ -26,6 +26,7 @@ public class TicketDto {
     private String searchCriteria;
 
     private String sportsKind;
+    private String place;
 
     public Integer getTicketNo() {
         return ticketNo;
@@ -161,5 +162,13 @@ public class TicketDto {
 
     public void setSportsKind(String sportsKind) {
         this.sportsKind = sportsKind;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.twsServer.service;
 
 import com.example.twsServer.dto.TicketDto;
+import com.example.twsServer.entity.TeamEntity;
 import com.example.twsServer.entity.TicketEntity;
 import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.repository.TeamRepository;
@@ -116,7 +117,7 @@ public class TicketService {
                 throw new ValidationException("searchCriteria invaild");
             }
 
-            resultDto = convertToDto(ticketEntity);
+            resultDto = convertToDto(ticketEntity, searchCriteria);
 
 
         } catch (Exception e) {
@@ -143,7 +144,7 @@ public class TicketService {
         }
     }
 
-    public List<TicketDto> convertToDto(List<TicketEntity> ticketEntities) {
+    public List<TicketDto> convertToDto(List<TicketEntity> ticketEntities, String searchCriteria) {
         return ticketEntities.stream().map(ticketEntity -> {
             TicketDto ticketDto = new TicketDto();
 
@@ -161,7 +162,15 @@ public class TicketService {
             ticketDto.setUserId(ticketEntity.getUserId());
             ticketDto.setTicketContent(ticketEntity.getTicketContent());
 
-            ticketDto.setSportsKind(teamRepository.findByTeamNo(ticketEntity.getHomeTeamNo()).getSportsKind());
+            TeamEntity teamEntity = teamRepository.findByTeamNo(ticketEntity.getHomeTeamNo());
+
+            // 스포츠 종류 img 셋팅
+            ticketDto.setSportsKind(teamEntity.getSportsKind());
+
+            // 직관 장소 셋팅
+            if (searchCriteria.equals("Detail")){
+                ticketDto.setPlace(teamEntity.getPlace());
+            }
 
             return ticketDto;
         }).collect(Collectors.toList());
