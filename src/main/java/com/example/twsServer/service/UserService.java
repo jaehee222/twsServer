@@ -1,17 +1,13 @@
 package com.example.twsServer.service;
 
 import com.example.twsServer.dto.UserDto;
-import com.example.twsServer.entity.TicketEntity;
 import com.example.twsServer.entity.UserEntity;
 import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -41,6 +37,22 @@ public class UserService {
             return true;
         }else{
             return false;
+        }
+    }
+
+    // 내정보
+    public UserDto myInfo(String UserId) {
+        UserEntity myUser = userRepository.findByUserId(UserId);
+        try {
+            if (myUser != null) {
+            return convertToDto(myUser);
+            } else {
+                throw new ValidationException("user 정보가 없습니다.");
+            }
+        } catch (ValidationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -116,7 +128,9 @@ public class UserService {
         UserDto userDto = new UserDto();
 
         userDto.setUserId(userEntity.getUserId());
-        userDto.setPassword(userEntity.getPassword());
+        userDto.setNickName(userEntity.getNickName());
+        // 비번은 안돼..
+        // userDto.setPassword(userEntity.getPassword());
         userDto.setEmail(userEntity.getEmail());
         userDto.setRegDate(userEntity.getRegDate());
 

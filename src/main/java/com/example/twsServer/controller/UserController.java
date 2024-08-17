@@ -31,6 +31,12 @@ public class UserController {
         return userService.idDoubleCheck(userId);
     }
 
+    @GetMapping("/myInfo")
+    public ResponseEntity<Object> myInfo(HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.myInfo(userId));
+    }
+
     @GetMapping("/checkNickname")
     public boolean checkNickname(@RequestParam String nickName) {
         return userService.NickNameDoubleCheck(nickName);
