@@ -13,7 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -104,16 +110,27 @@ public class TicketService {
             // 사용자에 해당하는 전체 글목록
             if ("All".equals(searchCriteria)) {
                 ticketEntity = getPageOfTicket(userId, ticketDto.getPage(), ticketDto.getSize());
-                // 조회날짜에 해당하는 글목록 (달력)
+
+            // 조회날짜에 해당하는 글목록 (달력-상세)
             } else if ("Date".equals(searchCriteria)) {
                 ticketEntity = ticketRepository.findByUserIdAndGameDate(userId, ticketDto.getGameDate());
-                // 티켓명에 해당하는 글목록 (글 상세보기)
+
+            // 해당 날짜의 한 달치 조회 (달력-전체)
+            } else if ("Month".equals(searchCriteria)){
+                LocalDate inputDate = ticketDto.getGameDate();
+                LocalDate lastDay = ticketDto.getGameDate().with(TemporalAdjusters.lastDayOfMonth());
+
+                LocalDate startDate = LocalDate.of(inputDate.getYear(), inputDate.getMonth(), 1);
+                LocalDate endDate = LocalDate.of(inputDate.getYear(), inputDate.getMonth(), lastDay.getDayOfMonth());
+                ticketEntity = ticketRepository.findByUserIdAndMonth(userId, startDate, endDate);
+
+            // 티켓명에 해당하는 글목록 (글 상세보기)
             } else if ("Detail".equals(searchCriteria)) {
                 ticketEntity = ticketRepository.findByUserIdAndTicketNo(userId, ticketDto.getTicketNo());
                 if (ticketEntity.size() > 1) {
                     throw new ValidationException("DB error! 하나이상의 결과 출력");
                 }
-            } else {
+            }else {
                 throw new ValidationException("searchCriteria invaild");
             }
 

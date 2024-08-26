@@ -17,6 +17,10 @@ public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
 
     List<TicketEntity> findByUserIdAndGameDate(String userId, LocalDate gameDate);
 
+    @Query(value = "SELECT ticket_id, ticket_name, result, home_score, away_score FROM ticket WHERE user_id = :userId AND game_date BETWEEN :startDate AND :endDate"
+            , nativeQuery = true)
+    List<TicketEntity> findByUserIdAndMonth(String userId, LocalDate startDate, LocalDate endDate);
+
     List<TicketEntity> findByUserIdAndTicketNo(String userId, int ticketNo);
 
     Page<TicketEntity> findByUserId(String userId, Pageable pageable);
