@@ -18,6 +18,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,12 +111,21 @@ public class MyTeamService {
 
             String teamName = "";
             String sportsKind = "";
+            int days = 0;
+            Date currentDate = new Date();
+            Date regDate = new Date();
             for (Map<String, Object> row : infoList) {
 
                 String type = (String) row.get("type");
                 String result = (row.get("result")).toString();
                 sportsKind = (String) row.get("sportsKind");
                 teamName = (String) row.get("teamName");
+                regDate = (Date) row.get("regDate");
+
+                long diffInMillies = Math.abs(regDate.getTime() - currentDate.getTime());
+                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+                days = (int)diffInDays;
 
                 if (type.equals("HOME")) {
                     SetHashMap(result, homeCnt);
@@ -132,7 +142,7 @@ public class MyTeamService {
             double totalRate = homeRate + awayRate;
 
             TeamDto teamDto;
-            teamDto = new TeamDto(teamNo,teamName, sportsKind, homeRate, awayRate, totalRate);
+            teamDto = new TeamDto(teamNo,teamName, sportsKind, homeRate, awayRate, totalRate, homeTotal, awayTotal, days);
 
             return teamDto;
         } catch (Exception e) {

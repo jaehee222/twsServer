@@ -41,7 +41,7 @@ public class MyTeamController {
         }
     }
 
-    @GetMapping("/newMyTeam/{teaMmNo}")
+    @GetMapping("/newMyTeam/{teamNo}")
     public ResponseEntity<Object> addMyTeam(HttpSession session, @PathVariable(value="teamNo") Integer teamNo) {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {

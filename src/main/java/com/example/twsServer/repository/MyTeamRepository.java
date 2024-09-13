@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface MyTeamRepository extends JpaRepository<MyTeamEntity, Long> {
 
-    @Query(value = "SELECT t.team_no AS teamNo, t.team_name AS teamName, t.place AS place, t.sports_kind AS sportsKind " +
+    @Query(value = "SELECT t.team_no AS teamNo, t.team_name AS teamName, t.place AS place, t.sports_kind AS sportsKind, t.reg_date AS regDate " +
             "FROM my_team m, team t WHERE m.user_id = :userId AND t.team_no = m.team_no", nativeQuery = true)
     List<Tuple> findByUserId(@Param("userId") String userId);
 
