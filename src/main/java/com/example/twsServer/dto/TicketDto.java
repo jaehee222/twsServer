@@ -1,6 +1,9 @@
 package com.example.twsServer.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class TicketDto {
 
@@ -8,6 +11,7 @@ public class TicketDto {
     private String ticketName;
     private Integer homeTeamNo;
     private Integer awayTeamNo;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate gameDate;
     private Integer homeScore;
     private Integer awayScore;
@@ -62,6 +66,11 @@ public class TicketDto {
 
     public LocalDate getGameDate() {
         return gameDate;
+    }
+
+    public void setGameDate(String gameDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.gameDate = LocalDate.parse(gameDate, formatter);
     }
 
     public void setGameDate(LocalDate gameDate) {

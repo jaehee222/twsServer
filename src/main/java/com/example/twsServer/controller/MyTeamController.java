@@ -41,18 +41,19 @@ public class MyTeamController {
         }
     }
 
-    @GetMapping("/newMyTeam/{teamNo}")
-    public ResponseEntity<Object> addMyTeam(HttpSession session, @PathVariable(value="teamNo") Integer teamNo) {
+    @PostMapping("/newMyTeam")
+    public ResponseEntity<Object> addMyTeam(HttpSession session, @RequestBody MyTeamDto myTeamDto) {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             return ResponseEntity.badRequest().body("userId is null");
         }
 
         try {
+            Integer teamNo = myTeamDto.getTeamNo();
             myTeamService.createMyTeam(userId, teamNo);
             return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Create myTeam success(teamNo: %d)", teamNo));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(String.format("Create MyTeam failed(teamNo: %d): ", teamNo) + e.getMessage());
+            return ResponseEntity.status(500).body("Create MyTeam failed" + e.getMessage());
         }
     }
 
@@ -71,18 +72,19 @@ public class MyTeamController {
         }
     }
 
-    @GetMapping("/rate/{teamNo}")
-    public ResponseEntity<Object> getMyTeamRate(HttpSession session, @PathVariable(value = "teamNo") Integer teamNo) {
+    @PostMapping("/rate")
+    public ResponseEntity<Object> getMyTeamRate(HttpSession session, @RequestBody MyTeamDto myTeamDto) {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             return null;
         }
 
         try {
+            Integer teamNo = myTeamDto.getTeamNo();
             TeamDto teamDto = myTeamService.getTeamRate(userId, teamNo);
             return ResponseEntity.ok(teamDto);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(String.format("get MyTeam rate failed(teamNo: %d): ", teamNo) + e.getMessage());
+            return ResponseEntity.status(500).body("get MyTeam rate failed: " + e.getMessage());
         }
     }
 }

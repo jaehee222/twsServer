@@ -1,5 +1,6 @@
 package com.example.twsServer.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class TeamDto {
@@ -7,7 +8,7 @@ public class TeamDto {
     private String teamName;
     private String sportsKind;
     private String place;
-    private Date regDate;
+    private LocalDate regDate;
 
     // Rate
     private double homeRate;
@@ -91,7 +92,7 @@ public class TeamDto {
         this.totalRate = totalRate;
     }
 
-    public Date getRegDate() {
+    public LocalDate getRegDate() {
         return regDate;
     }
 
@@ -107,7 +108,7 @@ public class TeamDto {
         return days;
     }
 
-    public void setRegDate(Date regDate) {
+    public void setRegDate(LocalDate regDate) {
         this.regDate = regDate;
     }
 

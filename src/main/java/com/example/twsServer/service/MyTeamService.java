@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -52,13 +55,6 @@ public class MyTeamService {
 
     // MyTeam 추가
     public boolean createMyTeam(String userId, int teamNo) {
-        // Check valid teamNo
-        TeamEntity team = teamRepository.findByTeamNo(teamNo);
-        if (team == null) {
-            System.out.printf("Invalid TeamNo(%d)\n", teamNo);
-            return false;
-        }
-
         MyTeamEntity myTeam = new MyTeamEntity();
         MyTeamId id = new MyTeamId(userId, teamNo);
         myTeam.setId(id);
@@ -92,7 +88,7 @@ public class MyTeamService {
         WIN, TIE, LOSE
     }
     public TeamDto getTeamRate(String userId, int teamNo) {
-
+        System.out.printf("getTeamRate(%s, %d)\n", userId, teamNo);
         try {
             HashMap<Result, Integer> homeCnt = new HashMap<Result, Integer>() {{
                 put(Result.WIN, 0);
@@ -107,38 +103,42 @@ public class MyTeamService {
 
             List<Map<String, Object>> infoList = ticketRepository.findTicketsByUserIdAndTeamNo(userId, teamNo);
 
-            System.out.println(" ##### 1 ##### ");
-
             String teamName = "";
             String sportsKind = "";
             int days = 0;
-            Date currentDate = new Date();
-            Date regDate = new Date();
+            LocalDate currentDate = LocalDate.now();
+
             for (Map<String, Object> row : infoList) {
 
-                String type = (String) row.get("type");
-                String result = (row.get("result")).toString();
-                sportsKind = (String) row.get("sportsKind");
-                teamName = (String) row.get("teamName");
-                regDate = (Date) row.get("regDate");
+                String type = row.get("type") != null ? row.get("type").toString() : "";
+                String result = row.get("result") != null ? row.get("result").toString() : "";
+                sportsKind = row.get("sportsKind") != null ? row.get("sportsKind").toString() : "";
+                teamName = row.get("teamName") != null ? row.get("teamName").toString() : "";
+                String dateStr = row.get("regDate") != null ? row.get("regDate").toString() : "";
 
-                long diffInMillies = Math.abs(regDate.getTime() - currentDate.getTime());
-                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (!dateStr.isEmpty()) {
+                    LocalDate regDate = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                days = (int)diffInDays;
+                    long daysBetween = ChronoUnit.DAYS.between(currentDate, regDate);
+                    days = (int) daysBetween * -1;
+                }
 
-                if (type.equals("HOME")) {
-                    SetHashMap(result, homeCnt);
+                if (result.isEmpty()) {
+                    continue;
                 } else {
-                    SetHashMap(result, awayCnt);
+                    if (type.equals("HOME")) {
+                        SetHashMap(result, homeCnt);
+                    } else {
+                        SetHashMap(result, awayCnt);
+                    }
                 }
             }
 
             int homeTotal = homeCnt.get(Result.WIN) + homeCnt.get(Result.TIE) + homeCnt.get(Result.LOSE);
             int awayTotal = awayCnt.get(Result.WIN) + awayCnt.get(Result.TIE) + awayCnt.get(Result.LOSE);
 
-            double homeRate = (double) homeCnt.get(Result.WIN) / homeTotal;
-            double awayRate = (double) awayCnt.get(Result.WIN) / awayTotal;
+            double homeRate = homeTotal > 0 ? (double) homeCnt.get(Result.WIN) / homeTotal : 0.0;
+            double awayRate = awayTotal > 0 ? (double) awayCnt.get(Result.WIN) / awayTotal : 0.0;
             double totalRate = homeRate + awayRate;
 
             TeamDto teamDto;

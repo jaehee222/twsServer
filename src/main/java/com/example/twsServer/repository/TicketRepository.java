@@ -17,7 +17,7 @@ public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
 
     List<TicketEntity> findByUserIdAndGameDate(String userId, LocalDate gameDate);
 
-    @Query(value = "SELECT ticket_id, ticket_name, result, home_score, away_score FROM ticket WHERE user_id = :userId AND game_date BETWEEN :startDate AND :endDate"
+    @Query(value = "SELECT ticket_no, ticket_name, result, home_score, away_score, home_team_no, away_team_no, game_date, seat, photo, price, user_id, ticket_content FROM ticket WHERE user_id = :userId AND game_date BETWEEN :startDate AND :endDate"
             , nativeQuery = true)
     List<TicketEntity> findByUserIdAndMonth(String userId, LocalDate startDate, LocalDate endDate);
 
@@ -25,8 +25,8 @@ public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
 
     Page<TicketEntity> findByUserId(String userId, Pageable pageable);
 
-    @Query(value = "SELECT 'HOME' AS type, t.result, t.home_score, t.away_score, tm.team_name AS teamName, tm.sports_kind AS sportsKind FROM team tm, ticket t WHERE t.user_id = :userId AND t.home_team_no = :teamNo AND t.home_team_no = tm.team_no " +
-            "UNION ALL SELECT 'AWAY' AS type, t.result, t.home_score, t.away_score, tm.team_name AS teamName, tm.sports_kind AS sportsKind FROM team tm, ticket t WHERE t.user_id = :userId AND t.away_team_no = :teamNo AND t.away_team_no = tm.team_no"
+    @Query(value = "SELECT 'HOME' AS type, t.result, t.home_score, t.away_score, tm.team_name, tm.sports_kind, myt.reg_date FROM team tm, ticket t, my_team myt WHERE t.user_id = :userId AND t.home_team_no = :teamNo AND t.home_team_no = tm.team_no AND myt.team_no = tm.team_no " +
+            "UNION ALL SELECT 'AWAY' AS type, t.result, t.home_score, t.away_score, tm.team_name, tm.sports_kind, myt.reg_date FROM team tm, ticket t, my_team myt WHERE t.user_id = :userId AND t.away_team_no = :teamNo AND t.away_team_no = tm.team_no AND myt.team_no = tm.team_no"
             , nativeQuery = true)
     List<Map<String, Object>> findTicketsByUserIdAndTeamNo(@Param("userId") String userId, @Param("teamNo") int teamNo);
 

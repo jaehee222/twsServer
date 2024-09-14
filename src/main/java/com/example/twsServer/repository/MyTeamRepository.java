@@ -1,6 +1,7 @@
 package com.example.twsServer.repository;
 
 import com.example.twsServer.entity.MyTeamEntity;
+import com.example.twsServer.entity.MyTeamId;
 import com.example.twsServer.entity.TicketEntity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Tuple;
@@ -11,12 +12,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface MyTeamRepository extends JpaRepository<MyTeamEntity, Long> {
+public interface MyTeamRepository extends JpaRepository<MyTeamEntity, MyTeamId> {
 
-    @Query(value = "SELECT t.team_no AS teamNo, t.team_name AS teamName, t.place AS place, t.sports_kind AS sportsKind, t.reg_date AS regDate " +
+    @Query(value = "SELECT t.team_no AS teamNo, t.team_name AS teamName, t.place AS place, t.sports_kind AS sportsKind, m.reg_date AS regDate " +
             "FROM my_team m, team t WHERE m.user_id = :userId AND t.team_no = m.team_no", nativeQuery = true)
     List<Tuple> findByUserId(@Param("userId") String userId);
 

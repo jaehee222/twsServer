@@ -99,7 +99,6 @@ public class TicketService {
         }
     }
 
-
     public List<TicketDto> postView(String userId, TicketDto ticketDto) {
         List<TicketDto> resultDto = new ArrayList<>();
 
@@ -122,6 +121,7 @@ public class TicketService {
 
                 LocalDate startDate = LocalDate.of(inputDate.getYear(), inputDate.getMonth(), 1);
                 LocalDate endDate = LocalDate.of(inputDate.getYear(), inputDate.getMonth(), lastDay.getDayOfMonth());
+
                 ticketEntity = ticketRepository.findByUserIdAndMonth(userId, startDate, endDate);
 
             // 티켓명에 해당하는 글목록 (글 상세보기)
