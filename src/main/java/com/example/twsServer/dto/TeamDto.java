@@ -1,6 +1,7 @@
 package com.example.twsServer.dto;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class TeamDto {
@@ -24,7 +25,7 @@ public class TeamDto {
 
     }
 
-    public TeamDto(Integer teamNo, String teamName, String sportsKind, double homeRate, double awayRate, double totalRate, Integer homeCnt, Integer awayCnt, Integer days) {
+    public TeamDto(Integer teamNo, String teamName, String sportsKind, double homeRate, double awayRate, double totalRate, Integer homeCnt, Integer awayCnt, String regDateStr, Integer days) {
         this.teamNo = teamNo;
         this.teamName = teamName;
         this.sportsKind = sportsKind;
@@ -33,6 +34,7 @@ public class TeamDto {
         this.totalRate = totalRate;
         this.homeCnt = homeCnt;
         this.awayCnt = awayCnt;
+        this.setRegDate(regDateStr);
         this.days = days;
     }
 
@@ -110,6 +112,11 @@ public class TeamDto {
 
     public void setRegDate(LocalDate regDate) {
         this.regDate = regDate;
+    }
+
+    public void setRegDate(String regDateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.regDate = LocalDate.parse(regDateStr, formatter);
     }
 
     public void setHomeCnt(Integer homeCnt) {

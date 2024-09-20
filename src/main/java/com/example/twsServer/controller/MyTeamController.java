@@ -29,7 +29,6 @@ public class MyTeamController {
         if (session != null) {
             String userId = (String) session.getAttribute("userId");
             if (userId != null) {
-                System.out.println("userId: " + userId);
                 return myTeamService.findByUserId(userId);
             } else {
                 System.out.println("userId가 존재하지 않습니다.");
@@ -57,13 +56,14 @@ public class MyTeamController {
         }
     }
 
-    @GetMapping("/deleteMyTeam/{teamNo}")
-    public ResponseEntity<Object> deleteMyTeam(HttpSession session, @PathVariable(value = "teamNo") Integer teamNo) {
+    @PostMapping("/deleteMyTeam")
+    public ResponseEntity<Object> deleteMyTeam(HttpSession session, @RequestBody MyTeamDto myTeamDto) {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             return ResponseEntity.badRequest().body("userId is null");
         }
 
+        Integer teamNo = myTeamDto.getTeamNo();
         boolean isDelMyTeam = myTeamService.deleteMyTeam(userId, teamNo);
         if (isDelMyTeam) {
             return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Delete myTeam success(teamNo: %d)", teamNo));

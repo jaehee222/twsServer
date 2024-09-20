@@ -88,7 +88,6 @@ public class MyTeamService {
         WIN, TIE, LOSE
     }
     public TeamDto getTeamRate(String userId, int teamNo) {
-        System.out.printf("getTeamRate(%s, %d)\n", userId, teamNo);
         try {
             HashMap<Result, Integer> homeCnt = new HashMap<Result, Integer>() {{
                 put(Result.WIN, 0);
@@ -105,6 +104,7 @@ public class MyTeamService {
 
             String teamName = "";
             String sportsKind = "";
+            String dateStr = "";
             int days = 0;
             LocalDate currentDate = LocalDate.now();
 
@@ -114,7 +114,7 @@ public class MyTeamService {
                 String result = row.get("result") != null ? row.get("result").toString() : "";
                 sportsKind = row.get("sportsKind") != null ? row.get("sportsKind").toString() : "";
                 teamName = row.get("teamName") != null ? row.get("teamName").toString() : "";
-                String dateStr = row.get("regDate") != null ? row.get("regDate").toString() : "";
+                dateStr = row.get("regDate") != null ? row.get("regDate").toString() : "";
 
                 if (!dateStr.isEmpty()) {
                     LocalDate regDate = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -142,7 +142,7 @@ public class MyTeamService {
             double totalRate = homeRate + awayRate;
 
             TeamDto teamDto;
-            teamDto = new TeamDto(teamNo,teamName, sportsKind, homeRate, awayRate, totalRate, homeTotal, awayTotal, days);
+            teamDto = new TeamDto(teamNo,teamName, sportsKind, homeRate, awayRate, totalRate, homeTotal, awayTotal, dateStr, days);
 
             return teamDto;
         } catch (Exception e) {
