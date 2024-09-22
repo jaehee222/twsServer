@@ -2,6 +2,7 @@ package com.example.twsServer.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -11,7 +12,7 @@ public class MyTeamEntity {
     private MyTeamId id;
 
     @Column(name = "reg_date")
-    private Date regDate;
+    private LocalDate regDate;
 
     public MyTeamId getId() {
         return id;
@@ -21,11 +22,11 @@ public class MyTeamEntity {
         this.id = id;
     }
 
-    public Date getRegDate() {
+    public LocalDate getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(Date regDate) {
+    public void setRegDate(LocalDate regDate) {
         this.regDate = regDate;
     }
 }

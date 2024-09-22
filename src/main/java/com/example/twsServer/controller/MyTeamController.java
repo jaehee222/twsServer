@@ -2,8 +2,6 @@ package com.example.twsServer.controller;
 
 import com.example.twsServer.dto.MyTeamDto;
 import com.example.twsServer.dto.TeamDto;
-import com.example.twsServer.dto.TicketDto;
-import com.example.twsServer.entity.MyTeamEntity;
 import com.example.twsServer.service.MyTeamService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -49,7 +48,8 @@ public class MyTeamController {
 
         try {
             Integer teamNo = myTeamDto.getTeamNo();
-            myTeamService.createMyTeam(userId, teamNo);
+            LocalDate regDate = myTeamDto.getRegDate();
+            myTeamService.createMyTeam(userId, teamNo, regDate);
             return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Create myTeam success(teamNo: %d)", teamNo));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Create MyTeam failed" + e.getMessage());

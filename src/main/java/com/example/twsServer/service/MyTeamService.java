@@ -1,16 +1,13 @@
 package com.example.twsServer.service;
 
-import com.example.twsServer.dto.MyTeamDto;
 import com.example.twsServer.dto.TeamDto;
 import com.example.twsServer.entity.MyTeamEntity;
 import com.example.twsServer.entity.MyTeamId;
 import com.example.twsServer.entity.TeamEntity;
-import com.example.twsServer.entity.UserEntity;
 import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.repository.MyTeamRepository;
 import com.example.twsServer.repository.TeamRepository;
 import com.example.twsServer.repository.TicketRepository;
-import com.example.twsServer.repository.UserRepository;
 import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +18,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 public class MyTeamService {
@@ -54,11 +49,11 @@ public class MyTeamService {
     }
 
     // MyTeam 추가
-    public boolean createMyTeam(String userId, int teamNo) {
+    public boolean createMyTeam(String userId, int teamNo, LocalDate regDate) {
         MyTeamEntity myTeam = new MyTeamEntity();
         MyTeamId id = new MyTeamId(userId, teamNo);
         myTeam.setId(id);
-        myTeam.setRegDate(new Date());
+        myTeam.setRegDate(regDate);
 
         try {
             myTeamRepository.save(myTeam);

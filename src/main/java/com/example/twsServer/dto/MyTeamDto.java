@@ -1,10 +1,11 @@
 package com.example.twsServer.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class MyTeamDto {
     private String userId;
-    private Date regDate;
+    private LocalDate regDate;
     private Integer teamNo;
 
     public String getUserId() {
@@ -15,12 +16,17 @@ public class MyTeamDto {
         this.userId = userId;
     }
 
-    public Date getRegDate() {
+    public LocalDate getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(Date regDate) {
+    public void setRegDate(LocalDate regDate) {
         this.regDate = regDate;
+    }
+
+    public void setRegDate(String regDateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.regDate = LocalDate.parse(regDateStr, formatter);
     }
 
     public Integer getTeamNo() {
