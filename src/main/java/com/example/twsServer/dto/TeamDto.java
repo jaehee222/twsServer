@@ -14,7 +14,9 @@ public class TeamDto {
     // Rate
     private double homeRate;
     private double awayRate;
-    private double totalRate;
+    private double winRate;
+    private double loseRate;
+    private double tieRate;
 
     // Rate optional
     private Integer homeCnt;
@@ -23,19 +25,6 @@ public class TeamDto {
 
     public TeamDto() {
 
-    }
-
-    public TeamDto(Integer teamNo, String teamName, String sportsKind, double homeRate, double awayRate, double totalRate, Integer homeCnt, Integer awayCnt, String regDateStr, Integer days) {
-        this.teamNo = teamNo;
-        this.teamName = teamName;
-        this.sportsKind = sportsKind;
-        this.homeRate = homeRate;
-        this.awayRate = awayRate;
-        this.totalRate = totalRate;
-        this.homeCnt = homeCnt;
-        this.awayCnt = awayCnt;
-        this.setRegDate(regDateStr);
-        this.days = days;
     }
 
     public Integer getTeamNo() {
@@ -86,12 +75,28 @@ public class TeamDto {
         this.awayRate = awayRate;
     }
 
-    public double getTotalRate() {
-        return totalRate;
+    public double getWinRate() {
+        return winRate;
     }
 
-    public void setTotalRate(double totalRate) {
-        this.totalRate = totalRate;
+    public double getLoseRate() {
+        return loseRate;
+    }
+
+    public double getTieRate() {
+        return tieRate;
+    }
+
+    public void setWinRate(double winRate) {
+        this.winRate = winRate;
+    }
+
+    public void setLoseRate(double loseRate) {
+        this.loseRate = loseRate;
+    }
+
+    public void setTieRate(double tieRate) {
+        this.tieRate = tieRate;
     }
 
     public LocalDate getRegDate() {

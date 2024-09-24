@@ -84,12 +84,12 @@ public class MyTeamService {
     }
     public TeamDto getTeamRate(String userId, int teamNo) {
         try {
-            HashMap<Result, Integer> homeCnt = new HashMap<Result, Integer>() {{
+            HashMap<Result, Integer> homeMap = new HashMap<Result, Integer>() {{
                 put(Result.WIN, 0);
                 put(Result.TIE, 0);
                 put(Result.LOSE, 0);
             }};
-            HashMap<Result, Integer> awayCnt = new HashMap<Result, Integer>() {{
+            HashMap<Result, Integer> awayMap = new HashMap<Result, Integer>() {{
                 put(Result.WIN, 0);
                 put(Result.TIE, 0);
                 put(Result.LOSE, 0);
@@ -106,7 +106,9 @@ public class MyTeamService {
             for (Map<String, Object> row : infoList) {
 
                 String type = row.get("type") != null ? row.get("type").toString() : "";
-                String result = row.get("result") != null ? row.get("result").toString() : "";
+                Integer homeScore = row.get("homeScore") != null ? Integer.parseInt(row.get("homeScore").toString()) : 0;
+                Integer awayScore = row.get("awayScore") != null ? Integer.parseInt(row.get("awayScore").toString()) : 0;
+
                 sportsKind = row.get("sportsKind") != null ? row.get("sportsKind").toString() : "";
                 teamName = row.get("teamName") != null ? row.get("teamName").toString() : "";
                 dateStr = row.get("regDate") != null ? row.get("regDate").toString() : "";
@@ -118,26 +120,59 @@ public class MyTeamService {
                     days = (int) daysBetween * -1;
                 }
 
-                if (result.isEmpty()) {
+                if (type.isEmpty()) {
                     continue;
                 } else {
                     if (type.equals("HOME")) {
-                        SetHashMap(result, homeCnt);
+                        SetHashMap(type, homeScore, awayScore, homeMap);
                     } else {
-                        SetHashMap(result, awayCnt);
+                        SetHashMap(type, homeScore, awayScore, awayMap);
                     }
                 }
             }
 
-            int homeTotal = homeCnt.get(Result.WIN) + homeCnt.get(Result.TIE) + homeCnt.get(Result.LOSE);
-            int awayTotal = awayCnt.get(Result.WIN) + awayCnt.get(Result.TIE) + awayCnt.get(Result.LOSE);
+            int homeWins = homeMap.get(Result.WIN);
+            int homeTies = homeMap.get(Result.TIE);
+            int homeLosses = homeMap.get(Result.LOSE);
 
-            double homeRate = homeTotal > 0 ? (double) homeCnt.get(Result.WIN) / homeTotal : 0.0;
-            double awayRate = awayTotal > 0 ? (double) awayCnt.get(Result.WIN) / awayTotal : 0.0;
-            double totalRate = homeRate + awayRate;
+            int awayWins = awayMap.get(Result.WIN);
+            int awayTies = awayMap.get(Result.TIE);
+            int awayLosses = awayMap.get(Result.LOSE);
 
-            TeamDto teamDto;
-            teamDto = new TeamDto(teamNo,teamName, sportsKind, homeRate, awayRate, totalRate, homeTotal, awayTotal, dateStr, days);
+            int homeTotalGames = homeWins + homeTies + homeLosses;
+            int awayTotalGames = awayWins + awayTies + awayLosses;
+
+            double homeWinRate = homeTotalGames > 0 ? (double) homeWins / homeTotalGames : 0.0;
+            double homeTieRate = homeTotalGames > 0 ? (double) homeTies / homeTotalGames : 0.0;
+            double homeLoseRate = homeTotalGames > 0 ? (double) homeLosses / homeTotalGames : 0.0;
+
+            double awayWinRate = awayTotalGames > 0 ? (double) awayWins / awayTotalGames : 0.0;
+            double awayTieRate = awayTotalGames > 0 ? (double) awayTies / awayTotalGames : 0.0;
+            double awayLoseRate = awayTotalGames > 0 ? (double) awayLosses / awayTotalGames : 0.0;
+
+            int totalWins = homeWins + awayWins;
+            int totalTies = homeTies + awayTies;
+            int totalLosses = homeLosses + awayLosses;
+
+            int totalGames = homeTotalGames + awayTotalGames;
+
+            double totalWinRate = totalGames > 0 ? (double) totalWins / totalGames : 0.0;
+            double totalTieRate = totalGames > 0 ? (double) totalTies / totalGames : 0.0;
+            double totalLoseRate = totalGames > 0 ? (double) totalLosses / totalGames : 0.0;
+
+            TeamDto teamDto = new TeamDto();
+            teamDto.setTeamNo(teamNo);
+            teamDto.setTeamName(teamName);
+            teamDto.setSportsKind(sportsKind);
+            teamDto.setHomeRate(homeWinRate);
+            teamDto.setAwayRate(awayWinRate);
+            teamDto.setWinRate(totalWinRate);
+            teamDto.setLoseRate(totalLoseRate);
+            teamDto.setTieRate(totalTieRate);
+            teamDto.setHomeCnt(homeTotalGames);
+            teamDto.setAwayCnt(awayTotalGames);
+            teamDto.setRegDate(dateStr);
+            teamDto.setDays(days);
 
             return teamDto;
         } catch (Exception e) {
@@ -145,21 +180,32 @@ public class MyTeamService {
         }
     }
 
-    private void SetHashMap(String result, HashMap<Result, Integer> map) {
-        switch(result) {
-            case "w" : {
-                Integer cnt = map.get(Result.WIN);
-                map.put(Result.WIN, ++cnt);
+    private void SetHashMap(String type, Integer homeScore, Integer awayScore, HashMap<Result, Integer> map) {
+        switch (type) {
+            case "HOME" : {
+                if (homeScore > awayScore) {
+                    Integer cnt = map.get(Result.WIN);
+                    map.put(Result.WIN, ++cnt);
+                } else if (homeScore < awayScore) {
+                    Integer cnt = map.get(Result.LOSE);
+                    map.put(Result.LOSE, ++cnt);
+                } else {
+                    Integer cnt = map.get(Result.TIE);
+                    map.put(Result.TIE, ++cnt);
+                }
                 break;
             }
-            case "t" : {
-                Integer cnt = map.get(Result.TIE);
-                map.put(Result.TIE, ++cnt);
-                break;
-            }
-            case "l" : {
-                Integer cnt = map.get(Result.LOSE);
-                map.put(Result.LOSE, ++cnt);
+            case "AWAY" : {
+                if (homeScore < awayScore) {
+                    Integer cnt = map.get(Result.WIN);
+                    map.put(Result.WIN, ++cnt);
+                } else if (homeScore > awayScore) {
+                    Integer cnt = map.get(Result.LOSE);
+                    map.put(Result.LOSE, ++cnt);
+                } else {
+                    Integer cnt = map.get(Result.TIE);
+                    map.put(Result.TIE, ++cnt);
+                }
                 break;
             }
         }
