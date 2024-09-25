@@ -108,6 +108,7 @@ public class MyTeamService {
                 String type = row.get("type") != null ? row.get("type").toString() : "";
                 Integer homeScore = row.get("homeScore") != null ? Integer.parseInt(row.get("homeScore").toString()) : 0;
                 Integer awayScore = row.get("awayScore") != null ? Integer.parseInt(row.get("awayScore").toString()) : 0;
+                String result = row.get("result") != null ? row.get("result").toString() : "";
 
                 sportsKind = row.get("sportsKind") != null ? row.get("sportsKind").toString() : "";
                 teamName = row.get("teamName") != null ? row.get("teamName").toString() : "";
@@ -120,7 +121,7 @@ public class MyTeamService {
                     days = (int) daysBetween * -1;
                 }
 
-                if (type.isEmpty()) {
+                if (result.isEmpty()) {
                     continue;
                 } else {
                     if (type.equals("HOME")) {
