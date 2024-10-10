@@ -9,6 +9,7 @@ public class UserDto {
     private String nickName;
     private String email;
     private Date regDate;
+    private String changePassword;
 
     public String getUserId() {
         return userId;
@@ -48,5 +49,13 @@ public class UserDto {
 
     public void setRegDate(Date regDate) {
         this.regDate = regDate;
+    }
+
+    public String getChangePassword() {
+        return changePassword;
+    }
+
+    public void setChangePassword(String changePassword) {
+        this.changePassword = changePassword;
     }
 }

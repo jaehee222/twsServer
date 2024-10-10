@@ -123,6 +123,28 @@ public class UserService {
         }
     }
 
+    // 비밀번호 변경
+    public boolean changePassword(String userId, UserDto userDto) {
+        boolean isCorrect = login(userId, userDto.getPassword());
+        if (isCorrect) {
+            UserEntity user = userRepository.findByUserId(userId);
+            user.setPassword(userDto.getChangePassword());
+            userRepository.save(user);
+
+            return true;
+        }
+        return false;
+    }
+
+    // 회원정보(닉네임) 변경
+    public boolean changeInfo(String userId, UserDto userDto) {
+        UserEntity user = userRepository.findByUserId(userId);
+        user.setNickName(userDto.getNickName());
+        userRepository.save(user);
+
+        return false;
+    }
+
     // 필요할때 사용 .. 아님 지우기
     private UserDto convertToDto(UserEntity userEntity) {
         UserDto userDto = new UserDto();
