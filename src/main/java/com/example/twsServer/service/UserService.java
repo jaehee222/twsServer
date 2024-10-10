@@ -142,7 +142,7 @@ public class UserService {
         user.setNickName(userDto.getNickName());
         userRepository.save(user);
 
-        return false;
+        return true;
     }
 
     // 필요할때 사용 .. 아님 지우기
