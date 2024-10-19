@@ -127,12 +127,36 @@ public class TicketController {
             return ResponseEntity.badRequest().body("userId is null");
         }
 
-        // 이미지가 존재하는지 확인
         ticketDto.setSearchCriteria("Detail");
-        TicketDto isDelTicketTmp = (TicketDto) ticketService.postView(userId, ticketDto);
-        if (isDelTicketTmp.getPhoto() != null){
-            cloudinary.uploader().destroy(ticketDto.getPhoto(), ObjectUtils.emptyMap());
+        List<TicketDto> ticketList = (List<TicketDto>) ticketService.postView(userId, ticketDto);
+
+        if (ticketList == null || ticketList.isEmpty()) {
+            return ResponseEntity.badRequest().body("Ticket not found");
         }
+        TicketDto isDelTicketTmp = ticketList.get(0);
+
+        if (isDelTicketTmp.getPhoto() != null){
+            try {
+                // Cloudinary에서 이미지 삭제
+                Map<String, Object> deleteResult = cloudinary.uploader().destroy(isDelTicketTmp.getPhoto(), ObjectUtils.emptyMap());
+
+                // 삭제 결과를 로그로 출력
+                System.out.println("Cloudinary delete result: " + deleteResult);
+
+                // 삭제 실패 여부 확인
+                if ("ok".equals(deleteResult.get("result"))) {
+                    System.out.println("Image deleted successfully from Cloudinary.");
+                } else {
+                    System.out.println("Image deletion failed: " + deleteResult.get("result"));
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cloudinary 이미지 삭제 실패");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cloudinary 이미지 삭제 중 예외 발생: " + e.getMessage());
+            }
+        }
+
         boolean isDelTicket = ticketService.deleteEntry(userId, ticketDto);
 
         if (isDelTicket) {
