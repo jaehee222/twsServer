@@ -147,6 +147,30 @@ public class UserController {
         }
     }
 
+    // 비밀번호 변경
+    @PostMapping("/changePw")
+    public ResponseEntity<Object> changePassword(HttpSession session, @RequestBody UserDto userDto) {
+        String userId = (String) session.getAttribute("userId");
+
+        if (userService.changePassword(userId, userDto)) {
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.badRequest().body("change password fail!");
+        }
+    }
+
+    // 회원정보 변경
+    @PostMapping("/changeInfo")
+    public ResponseEntity<Object> changeUserInfo(HttpSession session, @RequestBody UserDto userDto) {
+        String userId = (String) session.getAttribute("userId");
+
+        if (userService.changeInfo(userId, userDto)) {
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.badRequest().body("change user info fail!");
+        }
+    }
+
     @GetMapping("/logout")
     public void logout(HttpSession session) {
         // 로그인 세션 끊기
