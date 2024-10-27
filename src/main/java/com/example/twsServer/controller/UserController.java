@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    public String test(){
+    public String test() {
         return "Connect Success!";
     }
 
@@ -110,7 +110,7 @@ public class UserController {
     // 비밀번호로 사용자 찾기 API
     @GetMapping("/findByPassword")
     public ResponseEntity<Object> findByPassword(@RequestParam String email) {
-        
+
         if (email == null) {
             ResponseEntity.badRequest().body("email is null");
         }
@@ -124,20 +124,23 @@ public class UserController {
 
         String userId = (String) session.getAttribute("userId");
 
-        if (userId == null) {
-            // 회원가입..
-            if (userDto.getUserId() == null || userDto.getUserId().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("userId is null");
-            }
-            if (userDto.getPassword() == null || userDto.getPassword().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("password is null");
-            }
-            if (userDto.getNickName() == null || userDto.getNickName().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("nickName is null");
-            }
-            if (userDto.getEmail() == null || userDto.getEmail().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("email is null");
-            }
+        // 회원가입인데 세션 있으면 안됨.. 강제 끊어주기
+        if (userId != null) {
+            session.invalidate();
+        }
+
+        // 회원가입..
+        if (userDto.getUserId() == null || userDto.getUserId().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("userId is null");
+        }
+        if (userDto.getPassword() == null || userDto.getPassword().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("password is null");
+        }
+        if (userDto.getNickName() == null || userDto.getNickName().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("nickName is null");
+        }
+        if (userDto.getEmail() == null || userDto.getEmail().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("email is null");
         }
 
         if (userService.join(userId, userDto) != null) {
