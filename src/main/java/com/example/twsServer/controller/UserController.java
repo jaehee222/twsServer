@@ -7,24 +7,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.SimpleMailMessage;
 
 import javax.crypto.Cipher;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final JavaMailSender mailSender;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JavaMailSender mailSender) {
         this.userService = userService;
+        this.mailSender = mailSender;
     }
 
     @GetMapping("/test")
@@ -86,12 +94,10 @@ public class UserController {
         // 비밀 키 파일 경로 (경로를 실제 비밀 키 파일의 위치로 수정)
         String privateKeyPEM = new String(Files.readAllBytes(Paths.get("private.pem")));
 
-        // 불필요한 헤더 제거
         privateKeyPEM = privateKeyPEM.replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
                 .replaceAll("\\s+", "");
 
-        // Base64 디코딩 후 비밀 키 추출
         byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyPEM);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -100,22 +106,70 @@ public class UserController {
 
     // 암호화된 비밀번호를 복호화하는 메서드
     private String decryptPassword(String encryptedPassword) throws Exception {
-        PrivateKey privateKey = getPrivateKey();
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
-        return new String(decryptedBytes);
+        try {
+            PrivateKey privateKey = getPrivateKey();
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("RSA encryption failed", e);
+        }
+    }
+
+    private String encryptPassword(String password) {
+        try {
+            PrivateKey publicKey = getPrivateKey();
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] encryptedBytes = cipher.doFinal(password.getBytes());
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("RSA encryption failed", e);
+        }
     }
 
     // 비밀번호로 사용자 찾기 API
     @GetMapping("/findByPassword")
     public ResponseEntity<Object> findByPassword(@RequestParam String email) {
 
-        if (email == null) {
-            ResponseEntity.badRequest().body("email is null");
+        if (email == null || email.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Email is null or empty");
         }
-        // 나중에 이메일 전송 로직 구현 필요
-        return ResponseEntity.status(HttpStatus.CREATED).body("send Email!");
+
+        UserDto user = userService.findByPassword(email);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User not found with given email");
+        }
+
+        String tempPassword = generateTempPassword();
+        // String encryptedTempPassword = encryptPassword(tempPassword);
+
+        // 임시 비밀번호로 사용자 비밀번호 업데이트
+        user.setChangePassword(tempPassword);
+
+        boolean isChangePw = userService.changePassword(user.getUserId(), user, "findPw");
+
+        if (isChangePw) {
+            // 이메일 전송
+            sendTemporaryPasswordEmail(email, tempPassword);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Success!");
+        } else {
+            return ResponseEntity.badRequest().body("error change Pw");
+        }
+    }
+
+    private String generateTempPassword() {
+        return UUID.randomUUID().toString().substring(0, 8); // 8자리 임시 비밀번호 생성
+    }
+
+    private void sendTemporaryPasswordEmail(String email, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Your Temporary Password");
+        message.setText("Your temporary password is: " + tempPassword + "\nPlease login and change your password.");
+        mailSender.send(message);
     }
 
     // 사용자 회원가입 API
@@ -155,7 +209,7 @@ public class UserController {
     public ResponseEntity<Object> changePassword(HttpSession session, @RequestBody UserDto userDto) {
         String userId = (String) session.getAttribute("userId");
 
-        if (userService.changePassword(userId, userDto)) {
+        if (userService.changePassword(userId, userDto, "changeInfo")) {
             return ResponseEntity.ok(userDto);
         } else {
             return ResponseEntity.badRequest().body("change password fail!");
