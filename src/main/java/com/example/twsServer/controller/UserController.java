@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.SimpleMailMessage;
 
 import javax.crypto.Cipher;
@@ -16,9 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -73,10 +70,10 @@ public class UserController {
     public boolean login(HttpSession session, @RequestBody UserDto userDto) {
         try {
             // 암호화된 비밀번호를 복호화
-            String decryptedPassword = decryptPassword(userDto.getPassword());
+//            String decryptedPassword = decryptPassword(userDto.getPassword());
 
             // 로그인 시 복호화된 비밀번호 사용
-            if (userService.login(userDto.getUserId(), decryptedPassword)) {
+            if (userService.login(userDto.getUserId(), userDto.getPassword())) {
                 // 로그인 성공 시 세션에 userId 저장
                 session.setAttribute("userId", userDto.getUserId());
                 return true;
