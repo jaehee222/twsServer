@@ -103,7 +103,6 @@ public class UserService {
 
     // 로그인
     public boolean login(String userId, String password) {
-        // 비밀번호 암호화로직은 추후 구현예정..
         UserEntity user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new ValidationException("Invalid userId");

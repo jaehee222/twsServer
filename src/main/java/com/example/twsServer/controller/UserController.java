@@ -69,9 +69,6 @@ public class UserController {
     @PostMapping("/login")
     public boolean login(HttpSession session, @RequestBody UserDto userDto) {
         try {
-            // 암호화된 비밀번호를 복호화
-//            String decryptedPassword = decryptPassword(userDto.getPassword());
-
             // 로그인 시 복호화된 비밀번호 사용
             if (userService.login(userDto.getUserId(), userDto.getPassword())) {
                 // 로그인 성공 시 세션에 userId 저장
