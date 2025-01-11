@@ -21,6 +21,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -191,5 +192,18 @@ public class TicketService {
 
             return ticketDto;
         }).collect(Collectors.toList());
+    }
+
+    // 단순히 저장되어있는 이미지명 가져오기..
+    public String findImgName(String userId, int ticketNo) {
+        TicketEntity ticket = null;
+        List<TicketEntity> existingTickets = ticketRepository.findByUserIdAndTicketNo(userId, ticketNo);
+        if (!existingTickets.isEmpty()) {
+            // 리스트에서 첫 번째 티켓을 가져옴 (단일 티켓을 가져오기 위해)
+            ticket = existingTickets.get(0);
+        } else {
+            throw new ValidationException("사용자가 가지고 있는 티켓이 아닙니다.");
+        }
+        return ticket.getPhoto();
     }
 }

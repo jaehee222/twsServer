@@ -31,4 +31,5 @@ public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
     List<Map<String, Object>> findTicketsByUserIdAndTeamNo(@Param("userId") String userId, @Param("teamNo") int teamNo);
 
     void deleteByUserIdAndTicketNo(String userId, int ticketNo);
+
 }

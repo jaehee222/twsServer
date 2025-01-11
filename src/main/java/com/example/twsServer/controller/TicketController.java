@@ -1,6 +1,7 @@
 package com.example.twsServer.controller;
 
 import com.example.twsServer.dto.TicketDto;
+import com.example.twsServer.entity.TicketEntity;
 import com.example.twsServer.exception.ValidationException;
 import com.example.twsServer.service.TicketService;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/ticket")
@@ -65,27 +67,35 @@ public class TicketController {
             return ResponseEntity.badRequest().body("content is null");
         }
 
+        String existingTicket = "";
         if (ticketDto.getPhoto() != null) {
-            // 티켓 수정인 케이스에서 기존 이미지가 있으면 삭제
-            if (ticketDto.getTicketNo() != null){
-                String deleteImgResult = deleteImg(userId, ticketDto);
-                if (!deleteImgResult.equals("success")) {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(deleteImgResult);
-                }
-            }
             try {
+                // 기존 이미지 삭제 (수정 시)
+                if (ticketDto.getTicketNo() != null) {
+                    String deleteImgResult = deleteImg(userId, ticketDto);
+                    if (!deleteImgResult.equals("success")) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(deleteImgResult);
+                    }
+                }
+
+                // 업로드 진행
                 byte[] imageBytes = Base64.getDecoder().decode(ticketDto.getPhoto());
-                Map<String, Object> uploadOptions = ObjectUtils.asMap(
-                        "upload_preset", "today_log"  // 프리셋 이름을 여기에 추가
-                );
+                Map<String, Object> uploadResult = cloudinary.uploader().upload(imageBytes, ObjectUtils.asMap(
+                        "resource_type", "image",  // 이미지 타입 명시
+                        "invalidate", true
+                ));
 
-                Map<String, Object> uploadResult = cloudinary.uploader().upload(imageBytes, ObjectUtils.emptyMap());
-                String publicId = (String) uploadResult.get("public_id");
-
-                // 이미지 URL 및 public_id를 TicketDto에 설정
-                ticketDto.setPhoto(publicId); // public_id 설정
+                // 업로드 성공 시 public_id 저장
+                if (uploadResult.containsKey("public_id")) {
+                    String publicId = (String) uploadResult.get("public_id");
+                    ticketDto.setPhoto(publicId);
+                } else {
+                    throw new RuntimeException("Cloudinary 업로드 실패: public_id 없음");
+                }
 
             } catch (Exception e) {
+                e.printStackTrace();
+                ticketDto.setPhoto(null);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패: " + e.getMessage());
             }
         }
@@ -161,18 +171,21 @@ public class TicketController {
 
         if (isDelTicketTmp.getPhoto() != null) {
             try {
-                // Cloudinary에서 이미지 삭제
-                Map<String, Object> deleteResult = cloudinary.uploader().destroy(isDelTicketTmp.getPhoto(), ObjectUtils.emptyMap());
+                String publicId = isDelTicketTmp.getPhoto();
 
-                // 삭제 결과를 로그로 출력
+                // Cloudinary에서 이미지 삭제 (리소스 타입 및 캐시 무효화 추가)
+                Map<String, Object> deleteResult = cloudinary.uploader().destroy(publicId, ObjectUtils.asMap(
+                        "invalidate", true          // 캐시 무효화
+                ));
+
+                // 삭제 결과 로그 확인
+                System.out.println("삭제 시도 public_id: " + publicId);
                 System.out.println("Cloudinary delete result: " + deleteResult);
 
                 if ("ok".equals(deleteResult.get("result"))) {
-                    System.out.println("Image deleted successfully from Cloudinary.");
                     return "success";
                 } else {
-                    System.out.println("Image deletion failed: " + deleteResult.get("result"));
-                    return "Cloudinary 이미지 삭제 실패";
+                    return "Cloudinary 이미지 삭제 실패: " + deleteResult.get("result");
                 }
 
             } catch (Exception e) {
